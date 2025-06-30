@@ -6,7 +6,7 @@ use std::collections::HashMap;
 
 type LangMap = HashMap<String, String>;
 
-const VERSION: &str = "0.1.0";
+const VERSION: &str = "0.2.0";
 
 #[derive(Serialize, Deserialize, Default)]
 struct Config {
@@ -60,8 +60,23 @@ fn load_language(code: &str) -> LangMap {
 }
 
 fn load_presets() -> Vec<Preset> {
-    let data = std::fs::read_to_string("presets.json").unwrap_or_default();
-    serde_json::from_str(&data).unwrap_or_default()
+    let url = "https://raw.githubusercontent.com/Nicolhetti/DSQProcess/refs/heads/master/presets.json";
+
+    if let Ok(response) = reqwest::blocking::get(url) {
+        if let Ok(text) = response.text() {
+            if let Ok(presets) = serde_json::from_str(&text) {
+                return presets;
+            }
+        }
+    }
+
+    if let Ok(data) = std::fs::read_to_string("presets.json") {
+        if let Ok(presets) = serde_json::from_str(&data) {
+            return presets;
+        }
+    }
+
+    vec![]
 }
 
 fn check_for_updates(current_version: &str) -> Result<Option<String>, Box<dyn std::error::Error>> {
