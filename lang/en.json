@@ -1,0 +1,16 @@
+{
+    "title": "DSQProcess",
+    "lang": "Language:",
+    "select_preset": "Select preset",
+    "use_preset": "Use preset",
+    "executable_name": "Executable name:",
+    "path_label": "Path (folder):",
+    "start_process": "Start fake process",
+    "check_update": "Check for updates",
+    "update_available": "Update available! Download: {url}",
+    "up_to_date": "You are using the latest version.",
+    "update_error": "Error checking for updates: {error}",
+    "error_empty": "Process name cannot be empty.",
+    "success": "Process '{name}' started in '{path}'.",
+    "error": "Error: {error}"
+}

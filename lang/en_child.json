@@ -1,0 +1,7 @@
+{
+    "title": "Simulated process",
+    "close_in_15": "⏱️ Close in 15 minutes",
+    "scheduled_close": "Close scheduled in 15 minutes.",
+    "close_now": "🟥 Stop now",
+    "auto_closing": "Auto closing in {min}:{sec}"
+}

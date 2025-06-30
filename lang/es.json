@@ -1,0 +1,16 @@
+{
+    "title": "DSQProcess",
+    "lang": "Idioma:",
+    "select_preset": "Seleccionar preset",
+    "use_preset": "Usar preset",
+    "executable_name": "Nombre del ejecutable:",
+    "path_label": "Ruta (carpeta):",
+    "start_process": "Iniciar proceso falso",
+    "check_update": "Buscar actualizaciones",
+    "update_available": "¡Actualización disponible! Descarga: {url}",
+    "up_to_date": "Estás usando la última versión.",
+    "update_error": "Error al buscar actualización: {error}",
+    "error_empty": "El nombre del proceso no puede estar vacío.",
+    "success": "Proceso '{name}' iniciado en '{path}'.",
+    "error": "Error: {error}"
+}
