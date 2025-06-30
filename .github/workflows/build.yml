@@ -1,0 +1,42 @@
+name: Build & Release (Windows)
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Add build dependencies
+        run: rustup target add x86_64-pc-windows-msvc
+
+      - name: Build project (release)
+        run: cargo build --release
+
+      - name: Prepare release folder
+        run: |
+          mkdir dist
+          mkdir dist/lang
+          copy target\release\dsqprocess.exe dist\
+          copy target\release\dsqchild.exe dist\
+          copy presets.json dist\
+          copy lang\*.json dist\lang\
+
+      - name: Create ZIP package
+        run: Compress-Archive -Path dist\* -DestinationPath DSQProcess.zip
+
+      - name: Upload Release Artifact
+        uses: softprops/action-gh-release@v2
+        with:
+          files: DSQProcess.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
