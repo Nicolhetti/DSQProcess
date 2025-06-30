@@ -175,11 +175,6 @@
         "path": "Games/Towerborne/Win64"
     },
     {
-        "name": "Starlight ReVolver",
-        "executable": "HalcyonDive.exe",
-        "path": "Games/Starlight ReVolver Demo/Win64"
-    },
-    {
         "name": "Marvel Rivals",
         "executable": "Marvel-Win64-Shipping.exe",
         "path": "Games/Marvel Rivals/Win64"
