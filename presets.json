@@ -158,5 +158,30 @@
         "name": "Subnautica",
         "executable": "Subnautica.exe",
         "path": "Games/Subnautica"
+    },
+    {
+        "name": "Palia",
+        "executable": "PaliaClientSteam-Win64-Shipping.exe",
+        "path": "Games/Palia/Win64"
+    },
+    {
+        "name": "R.E.P.O.",
+        "executable": "REPO.exe",
+        "path": "Games/REPO"
+    },
+    {
+        "name": "Towerborne",
+        "executable": "BelfryClient-Win64-Shipping.exe",
+        "path": "Games/Towerborne/Win64"
+    },
+    {
+        "name": "Starlight ReVolver",
+        "executable": "HalcyonDive.exe",
+        "path": "Games/Starlight ReVolver Demo/Win64"
+    },
+    {
+        "name": "Marvel Rivals",
+        "executable": "Marvel-Win64-Shipping.exe",
+        "path": "Games/Marvel Rivals/Win64"
     }
 ]
