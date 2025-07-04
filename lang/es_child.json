@@ -1,7 +1,7 @@
 {
     "title": "Proceso simulado",
-    "close_in_15": "⏱️ Cerrar en 15 minutos",
-    "scheduled_close": "Cierre programado en 15 minutos.",
-    "close_now": "🟥 Detener ahora",
-    "auto_closing": "Cierre automático en {min}:{sec}"
+    "close_now": "⏹ Detener ahora",
+    "close_in_15": "⏱ Cerrar en 15 minutos",
+    "auto_closing": "Cierre automático en {min}:{sec}",
+    "scheduled_close": "Cierre programado en 15 minutos."
 }

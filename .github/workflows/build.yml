@@ -28,6 +28,7 @@ jobs:
           mkdir dist/lang
           copy target\release\dsqprocess.exe dist\
           copy target\release\dsqchild.exe dist\
+          copy presets.json dist\
           copy lang\*.json dist\lang\
 
       - name: Create ZIP package

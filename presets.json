@@ -100,6 +100,11 @@
         "path": "Games/Marvel Rivals/Win64"
     },
     {
+        "name": "Once Human",
+        "executable": "ONCE_HUMAN.exe",
+        "path": "Games/Once Human"
+    },
+    {
         "name": "Ori and the Blind Forest",
         "executable": "Ori.exe",
         "path": "Games/Ori and the Blind Forest"
