@@ -27,8 +27,6 @@
 
 ## 📷 Capturas
 
-> *(Agrega tus capturas reales aquí si ya tienes la interfaz lista)*
-
 ![Main](assets/image1.png)
 
 ---
