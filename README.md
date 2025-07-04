@@ -27,8 +27,6 @@
 
 ## 📷 Screenshots
 
-> *(Update this section with real screenshots if available)*
-
 ![Main](assets/image1.png)
 
 ---
