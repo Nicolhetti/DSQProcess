@@ -6,69 +6,84 @@
 
 > ⚙️ Simula la ejecución de juegos para cumplir misiones de Discord sin tener que instalar los juegos reales.
 
-DSQProcess es una herramienta ligera, segura y personalizable, diseñada para ayudar a usuarios con PCs de bajos recursos o sin espacio/disco suficiente a completar **misiones de Discord** que requieren jugar ciertos juegos durante 15 minutos o más.
+**DSQProcess** es una herramienta ligera, segura y personalizable, pensada para usuarios con PCs de bajos recursos o poco espacio en disco que deseen completar **misiones de Discord** que requieren jugar ciertos juegos durante 15 minutos o más.
 
 ---
 
 ## 🌟 Características
 
-- 🖥️ Interfaz gráfica simple y profesional (basado en egui).
-- 🌐 Multilenguaje (Español e Inglés).
-- 🔄 Actualizaciones automáticas desde GitHub Releases.
-- 📁 Presets personalizables con estructura de carpetas.
-- 💾 Configuración persistente (idioma, selección de juego, etc).
-- 🧱 Ejecutable secundario (`dsqchild`) que simula el proceso por 15 minutos o hasta cerrarse manualmente.
-- 🚫 Sin consola: todo ocurre desde la interfaz gráfica.
+- 🖥️ Interfaz gráfica moderna y simple (basada en `egui`).
+- 🧭 Interfaz dividida en pestañas: **Principal**, **Configuraciones**, y **Sobre**.
+- 🕵️‍♂️ Detecta si Discord está abierto (versión Normal, Canary o PTB).
+- 🔘 Permite abrir Discord directamente si está cerrado.
+- 📁 Presets de juegos personalizables con estructura realista.
+- 🔄 Actualización de presets directamente desde el repositorio de GitHub.
+- 🌐 Soporte multilenguaje (Español e Inglés).
+- 💾 Guarda tu configuración: idioma, juego y ruta seleccionada.
+- 📦 Incluye un ejecutable secundario (`dsqchild`) que simula el juego.
+- 🚫 No se necesita consola: todo funciona desde la interfaz gráfica.
 
 ---
 
 ## 📷 Capturas
 
-![Image](assets/image2.png)
+> *(Agrega tus capturas reales aquí si ya tienes la interfaz lista)*
+
+![Main](assets/image1.png)
 
 ---
 
 ## 🚀 Cómo usar
 
 1. Ejecuta `DSQProcess`.
-2. Selecciona un preset o define manualmente el nombre del ejecutable y su ruta.
-3. Presiona "Iniciar proceso".
-4. El programa copiará `dsqchild` con el nombre del juego y lo ejecutará por 15 minutos (o hasta que lo cierres manualmente).
-5. Discord detectará que el juego está en ejecución, permitiéndote cumplir la misión.
+2. Ve a la pestaña **Principal**.
+3. Selecciona un preset o escribe manualmente el nombre del ejecutable y su ruta.
+4. Haz clic en **Iniciar proceso**.
+5. El programa copiará y renombrará `dsqchild` con el nombre del juego y lo ejecutará por 15 minutos (o hasta que lo cierres).
+6. Discord detectará el juego en ejecución, permitiéndote completar la misión.
+
+---
+
+## 🔄 Presets
+
+- Puedes editar manualmente el archivo `presets.json` para agregar nuevos juegos.
+- El programa te notificará si tu archivo local está desactualizado.
+- Podés actualizarlo automáticamente con un clic desde el repositorio oficial.
 
 ---
 
 ## 📦 Descargas
 
-> ⚠️ Solo utiliza esta herramienta para propósitos educativos o personales. No está afiliada ni respaldada por Discord Inc.
+> ⚠️ Esta herramienta está pensada únicamente para **uso educativo o personal**. No está afiliada ni respaldada por Discord Inc.
 
-- Las últimas versiones se encuentran en la sección [Releases](https://github.com/Nicolhetti/DSQProcess/releases)
+- Las versiones más recientes están disponibles en la sección [Releases](https://github.com/Nicolhetti/DSQProcess/releases)
 
 ---
 
 ## 🌍 Idiomas disponibles
 
-- 🇪🇸 Español
+- 🇪🇸 Español  
 - 🇺🇸 English
 
 ---
 
 ## 🔧 Requisitos
 
-- Windows 7/10/11 (soporte parcial en Linux mediante Wine)
+- Windows 7 / 10 / 11 (soporte parcial en Linux con Wine)
 - Discord instalado y en ejecución
 
 ---
 
 ## 👨‍💻 Autor
 
-Desarrollado por [@Nicolhetti](https://github.com/Nicolhetti) <!-- Y un poquito de Copilot, lo siento Pro Devs 💔 -->
+Desarrollado por [@Nicolhetti](https://github.com/Nicolhetti)  
+<!-- *Con ayuda de ChatGPT y un poco de Copilot 💻✨* -->
 
 ---
 
 ## ⚠️ Descargo de responsabilidad
 
-Este proyecto no promueve el uso malicioso o fraudulento.  
-Discord Inc. podría modificar sus condiciones o detección en cualquier momento.
+Este proyecto **no promueve el uso malicioso ni fraudulento**.  
+Discord Inc. puede modificar sus mecanismos de detección o condiciones en cualquier momento. Usalo con responsabilidad.
 
 ---
