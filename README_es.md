@@ -27,7 +27,9 @@
 
 ## 📷 Capturas
 
-![Main](assets/image1.png)
+![image-3](https://github.com/user-attachments/assets/9898cf8e-9d7b-4d18-a4a9-7e8fbe0c1e33)
+![image-2](https://github.com/user-attachments/assets/4e1e1a46-f482-494e-b743-d1bdd89b41a9)
+![image-1](https://github.com/user-attachments/assets/eab0b6e6-f79f-4d6c-8272-92c65c3c6736)
 
 ---
 
