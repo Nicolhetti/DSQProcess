@@ -1,43 +1,13 @@
 [
-    {
+	{
         "name": "Apex Legends",
         "executable": "r5apex.exe",
         "path": "Games/Apex Legends"
     },
-    {
-        "name": "ARK: Survival Evolved",
-        "executable": "ShooterGame.exe",
-        "path": "Games/ARK Survival Evolved"
-    },
-    {
-        "name": "Assassin's Creed Valhalla",
-        "executable": "ACValhalla.exe",
-        "path": "Games/Assassin's Creed Valhalla"
-    },
-    {
-        "name": "Battlefield V",
-        "executable": "bfv.exe",
-        "path": "Games/Battlefield V"
-    },
-    {
-        "name": "Call of Duty: Modern Warfare",
-        "executable": "ModernWarfare.exe",
-        "path": "Games/Call of Duty Modern Warfare"
-    },
-    {
-        "name": "Celeste",
-        "executable": "Celeste.exe",
-        "path": "Games/Celeste"
-    },
-    {
-        "name": "Counter-Strike: Global Offensive",
-        "executable": "csgo.exe",
-        "path": "Games/Counter-Strike Global Offensive"
-    },
-    {
-        "name": "Cuphead",
-        "executable": "Cuphead.exe",
-        "path": "Games/Cuphead"
+	{
+        "name": "Arena Breakout: Infinite",
+        "executable": "UAGame.exe",
+        "path": "Games/Arena Breakout Infinite/Win64"
     },
     {
         "name": "Cyberpunk 2077",
@@ -50,34 +20,9 @@
         "path": "Games/Dead by Daylight/Win64"
     },
     {
-        "name": "Dead Cells",
-        "executable": "deadcells.exe",
-        "path": "Games/Dead Cells"
-    },
-    {
         "name": "Destiny 2",
         "executable": "destiny2.exe",
         "path": "Games/Destiny 2"
-    },
-    {
-        "name": "DOOM The Dark Ages",
-        "executable": "DOOMTheDarkAges.exe",
-        "path": "Games/DOOMTheDarkAges"
-    },
-    {
-        "name": "Dota 2",
-        "executable": "dota2.exe",
-        "path": "Games/dota 2 beta"
-    },
-    {
-        "name": "Factorio",
-        "executable": "factorio.exe",
-        "path": "Games/Factorio"
-    },
-    {
-        "name": "Fall Guys",
-        "executable": "FallGuys_client.exe",
-        "path": "Games/Fall Guys"
     },
     {
         "name": "Fortnite",
@@ -88,11 +33,6 @@
         "name": "Genshin Impact",
         "executable": "GenshinImpact.exe",
         "path": "Games/Genshin Impact"
-    },
-    {
-        "name": "Hades",
-        "executable": "Hades.exe",
-        "path": "Games/Hades"
     },
     {
         "name": "Marvel Rivals",
@@ -120,11 +60,6 @@
         "path": "Games/Palia/Win64"
     },
     {
-        "name": "Phasmophobia",
-        "executable": "Phasmophobia.exe",
-        "path": "Games/Phasmophobia"
-    },
-    {
         "name": "Rainbow Six Siege",
         "executable": "RainbowSix.exe",
         "path": "Games/Tom Clancy's Rainbow Six Siege"
@@ -133,11 +68,6 @@
         "name": "R.E.P.O.",
         "executable": "REPO.exe",
         "path": "Games/REPO"
-    },
-    {
-        "name": "Red Dead Redemption 2",
-        "executable": "RDR2.exe",
-        "path": "Games/Red Dead Redemption 2"
     },
     {
         "name": "Rust",
@@ -149,35 +79,20 @@
         "executable": "SlayTheSpire.exe",
         "path": "Games/Slay the Spire"
     },
-    {
-        "name": "Stardew Valley",
-        "executable": "Stardew Valley.exe",
-        "path": "Games/Stardew Valley"
+	{
+        "name": "SUPERVIVE",
+        "executable": "SUPERVIVE-Win64-Shipping.exe",
+        "path": "Games/SUPERVIVE/Win64"
     },
-    {
-        "name": "Subnautica",
-        "executable": "Subnautica.exe",
-        "path": "Games/Subnautica"
-    },
-    {
-        "name": "Terraria",
-        "executable": "Terraria.exe",
-        "path": "Games/Terraria"
-    },
-    {
-        "name": "The Witcher 3: Wild Hunt",
-        "executable": "witcher3.exe",
-        "path": "Games/The Witcher 3 Wild Hunt"
+	{
+        "name": "Terminull Brigade™",
+        "executable": "Rouge-Win64-Shipping.exe",
+        "path": "Games/Terminull Brigade/Win64"
     },
     {
         "name": "Towerborne",
         "executable": "BelfryClient-Win64-Shipping.exe",
         "path": "Games/Towerborne/Win64"
-    },
-    {
-        "name": "Undertale",
-        "executable": "Undertale.exe",
-        "path": "Games/Undertale"
     },
     {
         "name": "Valorant",
