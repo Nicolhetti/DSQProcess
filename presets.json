@@ -1,10 +1,10 @@
 [
-	{
+    {
         "name": "Apex Legends",
         "executable": "r5apex.exe",
         "path": "Games/Apex Legends"
     },
-	{
+    {
         "name": "Arena Breakout: Infinite",
         "executable": "UAGame.exe",
         "path": "Games/Arena Breakout Infinite/Win64"
