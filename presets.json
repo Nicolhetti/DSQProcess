@@ -10,6 +10,11 @@
         "path": "Games/Arena Breakout Infinite/Win64"
     },
     {
+        "name": "Battlefield 6 Open Beta",
+        "executable": "bf6event.exe",
+        "path": "Games/Battlefield 6 Open Beta"
+    },
+    {
         "name": "Cyberpunk 2077",
         "executable": "Cyberpunk2077.exe",
         "path": "Games/Cyberpunk 2077"
@@ -60,6 +65,11 @@
         "path": "Games/Palia/Win64"
     },
     {
+        "name": "PEAK",
+        "executable": "PEAK.exe",
+        "path": "Games/PEAK"
+    },
+    {
         "name": "Rainbow Six Siege",
         "executable": "RainbowSix.exe",
         "path": "Games/Tom Clancy's Rainbow Six Siege"
@@ -88,6 +98,11 @@
         "name": "Terminull Brigade™",
         "executable": "Rouge-Win64-Shipping.exe",
         "path": "Games/Terminull Brigade/Win64"
+    },
+	{
+        "name": "The First Descendant™",
+        "executable": "M1-Win64-Shipping.exe",
+        "path": "Games/The First Descendant/Win64"
     },
     {
         "name": "Towerborne",
