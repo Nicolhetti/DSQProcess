@@ -25,6 +25,11 @@
         "path": "Games/Dead by Daylight/Win64"
     },
     {
+        "name": "Delta Force",
+        "executable": "DeltaForceClient-Win64-Shipping.exe",
+        "path": "Games/Delta Force/Win64"
+    },
+    {
         "name": "Destiny 2",
         "executable": "destiny2.exe",
         "path": "Games/Destiny 2"
