@@ -10,9 +10,14 @@
         "path": "Games/Arena Breakout Infinite/Win64"
     },
     {
-        "name": "Battlefield 6 Open Beta",
+        "name": "Battlefield™ 6 Open Beta",
         "executable": "bf6event.exe",
-        "path": "Games/Battlefield 6 Open Beta"
+        "path": "Games/Battlefield™ 6 Open Beta/battlefield 6 event"
+    },
+    {
+        "name": "Borderlands 4",
+        "executable": "Borderlands4.exe",
+        "path": "Games/Borderlands 4/OakGame/Binaries/Win64"
     },
     {
         "name": "Cyberpunk 2077",
@@ -45,6 +50,11 @@
         "path": "Games/Genshin Impact"
     },
     {
+        "name": "inZOI",
+        "executable": "inZOI-Win64-Shipping.exe",
+        "path": "Games/inZOI/Win64"
+    },
+    {
         "name": "Marvel Rivals",
         "executable": "Marvel-Win64-Shipping.exe",
         "path": "Games/Marvel Rivals/Win64"
@@ -70,19 +80,24 @@
         "path": "Games/Palia/Win64"
     },
     {
+        "name": "Path of Exile 2",
+        "executable": "PathOfExile_x64Steam.exe",
+        "path": "Games/Path of Exile 2"
+    },
+    {
         "name": "PEAK",
         "executable": "PEAK.exe",
         "path": "Games/PEAK"
     },
     {
-        "name": "Rainbow Six Siege",
-        "executable": "RainbowSix.exe",
-        "path": "Games/Tom Clancy's Rainbow Six Siege"
-    },
-    {
         "name": "R.E.P.O.",
         "executable": "REPO.exe",
         "path": "Games/REPO"
+    },
+    {
+        "name": "Rainbow Six Siege",
+        "executable": "RainbowSix.exe",
+        "path": "Games/Tom Clancy's Rainbow Six Siege"
     },
     {
         "name": "Rust",
@@ -94,18 +109,23 @@
         "executable": "SlayTheSpire.exe",
         "path": "Games/Slay the Spire"
     },
-	{
+    {
         "name": "SUPERVIVE",
         "executable": "SUPERVIVE-Win64-Shipping.exe",
         "path": "Games/SUPERVIVE/Win64"
     },
-	{
+    {
         "name": "Terminull Brigade™",
         "executable": "Rouge-Win64-Shipping.exe",
         "path": "Games/Terminull Brigade/Win64"
     },
-	{
-        "name": "The First Descendant™",
+    {
+        "name": "THE FINALS",
+        "executable": "Discovery.exe",
+        "path": "Games/THE FINALS/Win64"
+    },
+    {
+        "name": "The First Descendant",
         "executable": "M1-Win64-Shipping.exe",
         "path": "Games/The First Descendant/Win64"
     },
