@@ -16,8 +16,8 @@
     },
     {
         "name": "Borderlands 4",
-        "executable": "borderlands4.exe",
-        "path": "Games/Borderlands 4/oakgame/binaries/win64"
+        "executable": "Borderlands4.exe",
+        "path": "Games/Borderlands 4/OakGame/Binaries/Win64"
     },
     {
         "name": "Cyberpunk 2077",
@@ -51,8 +51,8 @@
     },
     {
         "name": "inZOI",
-        "executable": "inzoi-win64-shipping.exe",
-        "path": "Games/inZOI/win64"
+        "executable": "inZOI-Win64-Shipping.exe",
+        "path": "Games/inZOI/Win64"
     },
     {
         "name": "Marvel Rivals",
@@ -81,8 +81,8 @@
     },
     {
         "name": "Path of Exile 2",
-        "executable": "pathofexile_x64.exe",
-        "path": "Games/Path of Exile 2/path of exile 2"
+        "executable": "PathOfExile_x64Steam.exe",
+        "path": "Games/Path of Exile 2"
     },
     {
         "name": "PEAK",
@@ -121,13 +121,13 @@
     },
     {
         "name": "THE FINALS",
-        "executable": "discovery.exe",
-        "path": "Games/THE FINALS/win64"
+        "executable": "Discovery.exe",
+        "path": "Games/THE FINALS/Win64"
     },
     {
         "name": "The First Descendant",
-        "executable": "m1-win64-shipping.exe",
-        "path": "Games/The First Descendant"
+        "executable": "M1-Win64-Shipping.exe",
+        "path": "Games/The First Descendant/Win64"
     },
     {
         "name": "Towerborne",
