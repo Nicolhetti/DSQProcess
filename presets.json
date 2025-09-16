@@ -105,6 +105,11 @@
         "path": "Games/Rust"
     },
     {
+        "name": "skate.",
+        "executable": "Skate.exe",
+        "path": "Games/skate"
+    },
+    {
         "name": "Slay the Spire",
         "executable": "SlayTheSpire.exe",
         "path": "Games/Slay the Spire"
