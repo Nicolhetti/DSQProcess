@@ -9,6 +9,19 @@ pub struct Config {
     pub selected_preset: usize,
     pub process_name: String,
     pub custom_path: String,
+    pub rich_presence_enabled: bool,
+}
+
+impl Config {
+    pub fn new() -> Self {
+        Self {
+            language: "Español".to_string(),
+            selected_preset: 0,
+            process_name: String::new(),
+            custom_path: String::new(),
+            rich_presence_enabled: true,
+        }
+    }
 }
 
 #[derive(Debug, Deserialize, Clone)]

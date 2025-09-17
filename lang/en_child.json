@@ -1,7 +1,17 @@
 {
-    "close_now": "⏹ Stop now",
+    "tips": "Tips:",
+    "close_now": "Stop now",
+    "simulating": "Simulating:",
     "title": "Simulated process",
-    "close_in_15": "⏱ Close in 15 minutes",
-    "auto_closing": "Auto closing in {min}:{sec}",
-    "scheduled_close": "Close scheduled in 15 minutes."
+    "time_elapsed": "Time elapsed:",
+    "close_in_15": "Close in 15 min",
+    "cancel_close": "✖ Cancel close",
+    "title_child": "DSQProcess - Simulator",
+    "simulated_process": "Simulated process",
+    "close_cancelled": "⚠ Auto close cancelled",
+    "automatic_closing": "Automatic closing in:",
+    "scheduled_close": "✔ Close scheduled in 15 minutes.",
+    "tip_1": "• This process simulates the game running",
+    "tip_2": "• Discord will automatically detect the game",
+    "tip_3": "• Keep this window open during the simulation"
 }

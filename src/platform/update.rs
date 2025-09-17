@@ -1,4 +1,4 @@
-pub const VERSION: &str = "0.3.0";
+pub const VERSION: &str = "0.4.0";
 
 pub fn check_for_updates(
     current_version: &str

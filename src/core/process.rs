@@ -9,7 +9,7 @@ pub fn create_fake_process(folder: &str, exe_name: &str, duration_min: u64) -> s
     let child_path = current_exe
         .parent()
         .unwrap()
-        .join(if cfg!(windows) { "dsqchild.exe" } else { "dsqchild" });
+        .join(if cfg!(windows) { "DSQChild.exe" } else { "DSQChild" });
 
     std::fs::copy(&child_path, &new_exe_path)?;
     std::process::Command::new(&new_exe_path).arg(duration_min.to_string()).spawn()?;

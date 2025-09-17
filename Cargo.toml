@@ -1,6 +1,6 @@
 [package]
 name = "dsqprocess"
-version = "0.3.0"
+version = "0.4.0"
 edition = "2021"
 
 [dependencies]
@@ -9,6 +9,7 @@ semver = "1.0"
 eframe = "0.27"
 sysinfo = "0.30"
 serde_json = "1.0"
+discord-rich-presence = "1.0.0"
 serde = { version = "1.0", features = ["derive"] }
 reqwest = { version = "0.12", features = ["blocking", "json"] }
 
@@ -16,9 +17,9 @@ reqwest = { version = "0.12", features = ["blocking", "json"] }
 winres = "0.1"
 
 [[bin]]
-name = "dsqprocess"
+name = "DSQProcess"
 path = "src/main.rs"
 
 [[bin]]
-name = "dsqchild"
+name = "DSQChild"
 path = "src/child/main.rs"
