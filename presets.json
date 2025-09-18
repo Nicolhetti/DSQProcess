@@ -140,6 +140,11 @@
         "path": "Games/Towerborne/Win64"
     },
     {
+        "name": "THRONE AND LIBERTY",
+        "executable": "TL.exe",
+        "path": "Games/THRONE AND LIBERTY/Win64"
+    },
+    {
         "name": "Valorant",
         "executable": "VALORANT-Win64-Shipping.exe",
         "path": "Games/VALORANT/Win64"
