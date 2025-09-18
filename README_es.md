@@ -4,86 +4,112 @@
   <a href="/README.md">English</a>
 </p>
 
-> ⚙️ Simula la ejecución de juegos para cumplir misiones de Discord sin tener que instalar los juegos reales.
+> ⚙️ Simula la ejecución de juegos para completar misiones de Discord sin instalar los juegos reales.
 
-**DSQProcess** es una herramienta ligera, segura y personalizable, pensada para usuarios con PCs de bajos recursos o poco espacio en disco que deseen completar **misiones de Discord** que requieren jugar ciertos juegos durante 15 minutos o más.
+**DSQProcess** es una herramienta ligera, segura y personalizable diseñada para usuarios con PCs de bajos recursos o espacio limitado en disco que desean completar **misiones de Discord** que requieren jugar juegos específicos durante 15 minutos o más.
 
 ---
 
 ## 🌟 Características
 
-- 🖥️ Interfaz gráfica moderna y simple (basada en `egui`).
-- 🧭 Interfaz dividida en pestañas: **Principal**, **Configuraciones**, y **Sobre**.
-- 🕵️‍♂️ Detecta si Discord está abierto (versión Normal, Canary o PTB).
-- 🔘 Permite abrir Discord directamente si está cerrado.
-- 📁 Presets de juegos personalizables con estructura realista.
-- 🔄 Actualización de presets directamente desde el repositorio de GitHub.
-- 🌐 Soporte multilenguaje (Español e Inglés).
-- 💾 Guarda tu configuración: idioma, juego y ruta seleccionada.
-- 📦 Incluye un ejecutable secundario (`dsqchild`) que simula el juego.
-- 🚫 No se necesita consola: todo funciona desde la interfaz gráfica.
+- 🖥️ **Interfaz Moderna**: Interfaz gráfica simple e intuitiva desarrollada con `egui`.
+- 🧭 **Pestañas Organizadas**: UI limpia dividida en secciones **Principal**, **Configuraciones** y **Sobre**.
+- 🕵️‍♂️ **Detección de Discord**: Detecta automáticamente si Discord está ejecutándose (Normal, Canary, PTB).
+- 🔘 **Inicio Rápido de Discord**: Inicia Discord directamente desde la aplicación si está cerrado.
+- 📁 **Presets de Juegos**: Presets personalizables almacenados localmente con más de 30 juegos populares incluidos.
+- 🔄 **Auto-Actualización de Presets**: Actualización con un clic desde el repositorio de GitHub.
+- 🔍 **Verificación Manual de Presets**: Verifica actualizaciones sin reiniciar la aplicación.
+- 🎮 **Discord Rich Presence**: Muestra tu juego simulado actual en Discord (opcional).
+- 🌐 **Multi-Idioma**: Soporte completo para español e inglés.
+- 💾 **Memoria de Configuraciones**: Recuerda tus preferencias entre sesiones.
+- 📦 **Ejecutable Dual**: Incluye un proceso secundario (`dsqchild`) para simulación de juegos.
+- ⚙️ **Sin Terminal**: Todo funciona dentro de la interfaz gráfica.
 
 ---
 
-## 📷 Capturas
+## 📷 Capturas de Pantalla
 
-![image-3](https://github.com/user-attachments/assets/9898cf8e-9d7b-4d18-a4a9-7e8fbe0c1e33)
-![image-2](https://github.com/user-attachments/assets/4e1e1a46-f482-494e-b743-d1bdd89b41a9)
-![image-1](https://github.com/user-attachments/assets/eab0b6e6-f79f-4d6c-8272-92c65c3c6736)
-
----
-
-## 🚀 Cómo usar
-
-1. Ejecuta `DSQProcess`.
-2. Ve a la pestaña **Principal**.
-3. Selecciona un preset o escribe manualmente el nombre del ejecutable y su ruta.
-4. Haz clic en **Iniciar proceso**.
-5. El programa copiará y renombrará `dsqchild` con el nombre del juego y lo ejecutará por 15 minutos (o hasta que lo cierres).
-6. Discord detectará el juego en ejecución, permitiéndote completar la misión.
+![image-1](assets/image1.jpg)
+![image-2](assets/image2.jpg)
 
 ---
 
-## 🔄 Presets
+## 🚀 Cómo Usar
 
-- Puedes editar manualmente el archivo `presets.json` para agregar nuevos juegos.
-- El programa te notificará si tu archivo local está desactualizado.
-- Podés actualizarlo automáticamente con un clic desde el repositorio oficial.
+1. **Ejecuta DSQProcess** y ve a la pestaña **Principal**.
+2. **Selecciona un preset** del menú desplegable o ingresa manualmente el nombre del ejecutable y la ruta.
+3. **Haz clic en "Iniciar Proceso"** para comenzar la simulación.
+4. La aplicación copiará y renombrará `dsqchild` usando el nombre del juego y lo ejecutará.
+5. **Discord detectará** el proceso falso del juego, permitiéndote completar la misión.
+6. **Rich Presence** (si está habilitado) mostrará el juego simulado en tu perfil de Discord.
+
+---
+
+## 🎮 Rich Presence
+
+- **Muestra**: "Jugando [Nombre del Juego]" en tu perfil de Discord
+- **Indica**: Tiempo transcurrido desde que se inició DSQProcess
+- **Configurable**: Se puede activar/desactivar en Configuraciones (activado por defecto)
+- **Detección Inteligente**: Usa nombres propios de juegos en lugar de nombres de ejecutables
+
+---
+
+## 🔄 Gestión de Presets
+
+- **Más de 30 Juegos Incluidos**: Juegos populares como Fortnite, Valorant, Apex Legends, y más.
+- **Actualizaciones Manuales**: Verifica actualizaciones de presets sin reiniciar la aplicación.
+- **Notificación Automática**: DSQProcess te notifica cuando los presets están desactualizados.
+- **Edición Fácil**: Edita manualmente `presets.json` para agregar juegos personalizados.
 
 ---
 
 ## 📦 Descargas
 
-> ⚠️ Esta herramienta está pensada únicamente para **uso educativo o personal**. No está afiliada ni respaldada por Discord Inc.
+> ⚠️ Esta herramienta es para **uso educativo/personal únicamente** y **no está afiliada con Discord Inc.**
 
-- Las versiones más recientes están disponibles en la sección [Releases](https://github.com/Nicolhetti/DSQProcess/releases)
+- Descarga la última versión desde la página de [Releases](https://github.com/Nicolhetti/DSQProcess/releases).
 
 ---
 
-## 🌍 Idiomas disponibles
+## 🌍 Idiomas Disponibles
 
-- 🇪🇸 Español  
-- 🇺🇸 English
+- 🇪🇸 **Español**
+- 🇺🇸 **English** (Inglés)
 
 ---
 
 ## 🔧 Requisitos
 
-- Windows 7 / 10 / 11 (soporte parcial en Linux con Wine)
-- Discord instalado y en ejecución
+- **Windows** 7 / 10 / 11
+- **Discord** instalado y ejecutándose
+- **Conexión a internet** (para actualizaciones de presets y Rich Presence)
+
+---
+
+## 🆕 Novedades en v0.4.0
+
+- ✨ **Integración con Discord Rich Presence**
+- 🔍 **Verificación manual de presets**
+- 🎨 **UI mejorada con elementos centrados y mejor organización**
+- 🎮 **Detección inteligente de nombres de juegos para Rich Presence**
+- 🚀 **Mejoras de rendimiento**
 
 ---
 
 ## 👨‍💻 Autor
 
 Desarrollado por [@Nicolhetti](https://github.com/Nicolhetti)  
-<!-- *Con ayuda de ChatGPT y un poco de Copilot 💻✨* -->
+<!-- *Con un poco de ayuda de Claude Sonnet 💻✨* -->
 
 ---
 
-## ⚠️ Descargo de responsabilidad
+## ⚠️ Descargo de Responsabilidad
 
-Este proyecto **no promueve el uso malicioso ni fraudulento**.  
-Discord Inc. puede modificar sus mecanismos de detección o condiciones en cualquier momento. Usalo con responsabilidad.
+Este proyecto **no** fomenta ningún tipo de fraude o abuso.  
+Discord Inc. puede actualizar sus mecanismos de detección o políticas en cualquier momento. Úsalo responsablemente.
 
 ---
+
+## 📝 Licencia
+
+Este proyecto está licenciado bajo la Licencia MIT - consulta el archivo [LICENSE](LICENSE) para más detalles.

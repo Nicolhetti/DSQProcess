@@ -1,3 +1,67 @@
+## 📝 Changelog — Versión `v0.4.0` (2025-09-17)
+
+### ✨ Nuevas funciones
+
+* 🎮 **Integración con Discord Rich Presence**
+  ¡DSQProcess ahora muestra tu actividad de juego simulado en Discord!
+
+  * Muestra **"Jugando [Nombre del Juego]"** en tu perfil de Discord en lugar de nombres de ejecutables.
+  * Indica el **tiempo transcurrido** desde que se inició DSQProcess.
+  * **Opción de activación** en Configuraciones para habilitar/deshabilitar Rich Presence (habilitado por defecto).
+  * **Detección inteligente de nombres** - muestra "Borderlands 4" en lugar de "Borderlands4.exe".
+
+* 🔍 **Verificación Manual de Presets**
+  Verifica actualizaciones de presets sin reiniciar la aplicación.
+
+  * Agregado botón **"Verificar Presets"** en la pestaña Principal.
+  * Verificación instantánea de archivos locales vs. remotos de presets.
+  * **Confirmación de estado** cuando los presets están actualizados.
+
+* 🎨 **Interfaz de Usuario Mejorada**
+  Interfaz completamente rediseñada con mejor organización y centrado.
+
+  * **Elementos centrados** - pestañas, botones y controles ahora correctamente alineados.
+  * **Secciones agrupadas** con tarjetas visuales para mejor organización.
+  * **Espaciado consistente** y diseño profesional en toda la aplicación.
+  * **Iconos agregados** a botones y secciones para mejor retroalimentación visual.
+
+---
+
+### 🛠️ Mejoras
+
+* **Arquitectura de Código**: Sistema de Rich Presence organizado en módulos dedicados (`src/shared/richpresence/`).
+* **Rendimiento de UI**: Renderizado optimizado con mejor gestión de widgets.
+* **Manejo de Errores**: Mensajes de error mejorados y retroalimentación de estado para Rich Presence.
+* **Persistencia de Configuraciones**: Preferencias de Rich Presence guardadas en la configuración.
+
+---
+
+### 🌐 Traducciones
+
+* Agregadas nuevas claves de traducción para Rich Presence y mejoras de UI:
+  * `"enable_rich_presence"`, `"rich_presence_connected"`, `"rich_presence_disconnected"`
+  * `"rich_presence_error"`, `"check_presets"`, `"presets_up_to_date"`
+
+---
+
+### 🐞 Correcciones
+
+* **Problemas de Centrado**: Corregidas pestañas, combo boxes y botones desalineados.
+* **Borrow Checker**: Resueltos errores de compilación de Rust relacionados con préstamos mutables/inmutables.
+* **Detección de Presets**: Mejorada extracción de nombres de juegos desde presets para Rich Presence.
+* **Gestión de Memoria**: Mejor limpieza de conexiones de Rich Presence al cerrar la aplicación.
+
+---
+
+### 🔧 Cambios Técnicos
+
+* Actualizadas dependencias en `Cargo.toml` para incluir `discord-rich-presence = "1.0.0"`.
+* Mejorada estructura `Config` para incluir campo `rich_presence_enabled`.
+* Mejor gestión del estado de la aplicación con `RichPresenceManager`.
+* Mejor manejo de errores para fallos de conexión Discord IPC.
+
+---
+
 ## 📝 Changelog — Versión `v0.3.0` (2025-07-03)
 
 ### ✨ Nuevas funciones
