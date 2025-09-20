@@ -1,5 +1,5 @@
 use discord_rich_presence::{
-    activity::{ Activity, Assets, Timestamps },
+    activity::{ Activity, Assets, Button, Timestamps },
     DiscordIpc,
     DiscordIpcClient,
 };
@@ -57,9 +57,8 @@ impl RichPresenceManager {
                         .large_text("DSQProcess - Discord Quest Process")
                 );
 
-            // TODO: Botones comentados temporalmente - no funcionan correctamente
-            // let button = Button::new("Ver repositorio", "https://github.com/Nicolhetti/DSQProcess");
-            // activity = activity.buttons(vec![button]);
+            let button = Button::new("Ver repositorio", "https://github.com/Nicolhetti/DSQProcess");
+            activity = activity.buttons(vec![button]);
 
             if let Some(game) = game_name {
                 let state_text = format!("Jugando: {}", game);
