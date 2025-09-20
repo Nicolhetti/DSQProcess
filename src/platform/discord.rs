@@ -1,5 +1,6 @@
 use std::process::Command;
 use std::path::{ Path, PathBuf };
+use std::ffi::OsStr;
 use sysinfo::System;
 
 #[derive(Debug, Clone, PartialEq)]
@@ -29,21 +30,19 @@ impl DiscordVersion {
 
 pub fn is_discord_running() -> bool {
     let system = System::new_all();
-    for process in system.processes_by_name("Discord") {
-        if process.name().contains("Discord") {
-            return true;
-        }
+
+    if system.processes_by_name(OsStr::new("Discord")).next().is_some() {
+        return true;
     }
-    for process in system.processes_by_name("DiscordCanary") {
-        if process.name().contains("DiscordCanary") {
-            return true;
-        }
+
+    if system.processes_by_name(OsStr::new("DiscordCanary")).next().is_some() {
+        return true;
     }
-    for process in system.processes_by_name("DiscordPTB") {
-        if process.name().contains("DiscordPTB") {
-            return true;
-        }
+
+    if system.processes_by_name(OsStr::new("DiscordPTB")).next().is_some() {
+        return true;
     }
+
     false
 }
 

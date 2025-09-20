@@ -4,17 +4,17 @@ version = "0.4.0"
 edition = "2021"
 
 [dependencies]
-open = "5.0"
-semver = "1.0"
+open = "5.3.2"
+semver = "1.0.27"
 eframe = "0.27"
-sysinfo = "0.30"
-serde_json = "1.0"
+sysinfo = "0.37.0"
+serde_json = "1.0.145"
 discord-rich-presence = "1.0.0"
-serde = { version = "1.0", features = ["derive"] }
-reqwest = { version = "0.12", features = ["blocking", "json"] }
+serde = { version = "1.0.225", features = ["derive"] }
+reqwest = { version = "0.12.23", features = ["blocking", "json"] }
 
 [build-dependencies]
-winres = "0.1"
+winres = "0.1.12"
 
 [[bin]]
 name = "DSQProcess"
