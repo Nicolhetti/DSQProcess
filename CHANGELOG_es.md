@@ -1,3 +1,31 @@
+## 📝 Changelog — Versión `v0.4.1` (2025-09-20)
+
+### 🛠️ Mejoras
+
+* **Arquitectura de Código**: Modularización completa de la UI para mejor mantenibilidad
+  * Dividido `src/app/ui.rs` en módulos separados: `main_tab.rs`, `settings_tab.rs`, `about_tab.rs`
+  * Agregado módulo `components.rs` para componentes UI reutilizables
+  * **Mejor organización del código** con módulos enfocados y de responsabilidad única
+  * **Mejor escalabilidad** - más fácil agregar nuevas pestañas y componentes
+  * **Mantenibilidad mejorada** - archivos más pequeños y enfocados
+
+---
+
+### 🔧 Cambios Técnicos
+
+* Reorganizada estructura de UI de archivo monolítico a arquitectura modular:
+  ```
+  src/app/ui/
+  ├── main_tab.rs      - Lógica y componentes de la pestaña Principal
+  ├── settings_tab.rs  - Lógica y componentes de la pestaña Configuraciones
+  ├── about_tab.rs     - Lógica y componentes de la pestaña Sobre
+  └── components.rs    - Componentes UI reutilizables
+  ```
+* **Sin cambios que rompan compatibilidad** - toda la funcionalidad permanece idéntica
+* **Mejor experiencia del desarrollador** con base de código más limpia y navegable
+
+---
+
 ## 📝 Changelog — Versión `v0.4.0` (2025-09-17)
 
 ### ✨ Nuevas funciones
