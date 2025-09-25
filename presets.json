@@ -114,6 +114,16 @@
         "executable": "SlayTheSpire.exe",
         "path": "Games/Slay the Spire"
     },
+	{
+        "name": "Snowbreak: Containment Zone",
+        "executable": "Game.exe",
+        "path": "Games/SNOWBREAK/Game/Binaries/Win64"
+    },
+    {
+        "name": "Sonic Racing: CrossWorlds",
+        "executable": "SonicRacingCrossWorldsSteam.exe",
+        "path": "Games/Sonic Racing CrossWorlds/Win64"
+    },
     {
         "name": "Starlight Re:Volver Demo",
         "executable": "HalcyonDive.exe",
