@@ -39,6 +39,11 @@
         "executable": "destiny2.exe",
         "path": "Games/Destiny 2"
     },
+	{
+        "name": "EA SPORTS FC™ 26",
+        "executable": "FC26.exe",
+        "path": "Games/EA SPORTS FC 26"
+    },
     {
         "name": "Fortnite",
         "executable": "FortniteClient-Win64-Shipping.exe",
