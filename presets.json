@@ -94,6 +94,12 @@
         "executable": "PEAK.exe",
         "path": "Games/PEAK"
     },
+    },
+    {
+        "name": "Perplexity",
+        "executable": "comet.exe",
+        "path": "Games/Perplexity/Comet/Application"
+    },
     {
         "name": "R.E.P.O.",
         "executable": "REPO.exe",
