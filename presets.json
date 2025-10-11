@@ -1,5 +1,10 @@
 [
     {
+        "name": "2XKO",
+        "executable": "Lion-Win64-Shipping.exe",
+        "path": "Games/2XKO/Live/Lion/Binaries/Win64"
+    },
+    {
         "name": "Apex Legends",
         "executable": "r5apex.exe",
         "path": "Games/Apex Legends"
@@ -10,9 +15,14 @@
         "path": "Games/Arena Breakout Infinite/Win64"
     },
     {
-        "name": "Battlefield™ 6 Open Beta",
-        "executable": "bf6event.exe",
-        "path": "Games/Battlefield™ 6 Open Beta/battlefield 6 event"
+        "name": "Battlefield™ 6",
+        "executable": "bf6.exe",
+        "path": "Games/Battlefield 6/SP"
+    },
+    {
+        "name": "Blue Protocol: Star Resonance",
+        "executable": "BPSR_STEAM.exe",
+        "path": "Games/Blue Protocol Star Resonance/bpsr"
     },
     {
         "name": "Borderlands 4",
@@ -58,6 +68,11 @@
         "name": "inZOI",
         "executable": "inZOI-Win64-Shipping.exe",
         "path": "Games/inZOI/Win64"
+    },
+    {
+        "name": "King of Meat",
+        "executable": "kingofmeat-release.exe",
+        "path": "Games/King of Meat/bin"
     },
     {
         "name": "Marvel Rivals",
