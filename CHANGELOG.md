@@ -1,3 +1,76 @@
+## 📝 Changelog — Version `v0.4.2` (2025-10-11)
+
+### ✨ New Features
+
+* 🎯 **Custom Preset Management**
+  Complete system for managing custom presets directly from the interface.
+
+  * **Add custom presets** without editing JSON files manually.
+  * **Edit existing presets** - modify name, executable, or path.
+  * **Delete custom presets** with confirmation dialog.
+  * **Visual distinction** - custom presets marked with ⭐ icon.
+  * **Separate storage** - custom presets stored in `presets_custom.json`.
+
+* 🔒 **Safe Preset Updates**
+  GitHub preset updates now preserve user-created presets.
+
+  * **Dual file system** - official presets in `presets.json`, custom in `presets_custom.json`.
+  * **Protected custom presets** - updating from GitHub only affects official presets.
+  * **No data loss** - your custom presets remain intact during updates.
+
+---
+
+### 🛠️ Improvements
+
+* **Performance Optimization**: Massive UI performance improvements in Main tab
+  * **Discord detection cache** - checks only every 5 seconds instead of every frame.
+  * **Reduced animations** - faster, smoother interface response.
+  * **Eliminated stuttering** - window dragging and interaction now buttery smooth.
+  * **Smart invalidation** - cache updates immediately when needed (e.g., opening Discord).
+
+* **Better UX**: Improved preset management workflow
+  * **Intuitive dialogs** - clear forms for adding/editing presets.
+  * **Duplicate prevention** - validates preset names before saving.
+  * **Confirmation dialogs** - prevents accidental deletion.
+  * **Error handling** - clear feedback for invalid inputs.
+
+---
+
+### 🌐 Translations
+
+* Added new translation keys for preset management:
+  * `"add_preset"`, `"add_preset_title"`, `"edit_preset"`, `"edit_preset_title"`
+  * `"delete_preset"`, `"delete_preset_title"`, `"delete_preset_confirm"`
+  * `"preset_name"`, `"save_preset"`, `"delete"`, `"cancel"`
+  * `"preset_fields_empty"`, `"preset_added_success"`, `"preset_edited_success"`, `"preset_deleted_success"`
+
+---
+
+### 🐞 Fixes
+
+* **Performance Issues**: Fixed severe performance problems in Main tab
+  * Eliminated constant Discord process checks causing UI stuttering
+  * Reduced unnecessary system calls during rendering
+  * Fixed laggy interactions with buttons and text fields
+
+* **Preset Management**: Improved reliability
+  * Better error messages for invalid preset data
+  * Fixed potential race conditions when saving presets
+  * Improved file handling for custom presets
+
+---
+
+### 🔧 Technical Changes
+
+* Added `presets_custom.json` for user-created presets
+* Implemented caching system with `std::time::Instant` for Discord checks
+* Enhanced `Preset` struct with `is_custom` field
+* New preset management functions: `add_preset()`, `edit_custom_preset()`, `delete_custom_preset()`
+* Optimized egui animation timing for better responsiveness
+* Added cache invalidation system for immediate updates when needed
+
+---
+
 ## 📝 Changelog — Version `v0.4.1` (2025-09-20)
 
 ### 🛠️ Improvements
