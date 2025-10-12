@@ -29,6 +29,7 @@ jobs:
           copy target\release\DSQProcess.exe dist\
           copy target\release\DSQChild.exe dist\
           copy presets.json dist\
+          copy presets_custom.json dist\
           copy lang\*.json dist\lang\
 
       - name: Create ZIP package

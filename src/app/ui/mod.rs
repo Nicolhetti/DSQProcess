@@ -2,6 +2,7 @@ pub mod main_tab;
 pub mod settings_tab;
 pub mod about_tab;
 pub mod components;
+pub mod preset_dialog;
 
 use eframe::egui;
 use crate::app::state::{ DsqApp, Tab };
@@ -30,6 +31,9 @@ pub fn render_ui(app: &mut DsqApp, ctx: &egui::Context) {
                 }
             });
         });
+    preset_dialog::render_add_dialog(ctx, app);
+    preset_dialog::render_edit_dialog(ctx, app);
+    preset_dialog::render_delete_confirmation(ctx, app);
 }
 
 fn render_tab_navigation(ui: &mut egui::Ui, app: &mut DsqApp) {

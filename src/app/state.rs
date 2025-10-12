@@ -19,6 +19,14 @@ pub struct DsqApp {
     pub rich_presence_enabled: bool,
     pub rich_presence: Option<RichPresenceManager>,
     pub current_simulated_game: Option<String>,
+    pub show_add_preset_dialog: bool,
+    pub show_edit_preset_dialog: bool,
+    pub show_delete_confirmation: bool,
+    pub new_preset_name: String,
+    pub new_preset_executable: String,
+    pub new_preset_path: String,
+    pub preset_to_delete: Option<String>,
+    pub preset_to_edit: Option<String>,
 }
 
 #[derive(PartialEq)]

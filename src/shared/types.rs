@@ -24,9 +24,11 @@ impl Config {
     }
 }
 
-#[derive(Debug, Deserialize, Clone)]
+#[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct Preset {
     pub name: String,
     pub executable: String,
     pub path: String,
+    #[serde(default)]
+    pub is_custom: bool,
 }

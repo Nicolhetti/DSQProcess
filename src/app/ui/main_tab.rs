@@ -91,13 +91,23 @@ fn render_presets_section(ui: &mut egui::Ui, app: &mut DsqApp) {
                     .width(300.0)
                     .show_ui(ui, |ui| {
                         for (i, preset) in app.presets.iter().enumerate() {
-                            ui.selectable_value(&mut app.selected_preset, i, &preset.name);
+                            let label = if preset.is_custom {
+                                format!("⭐ {}", preset.name)
+                            } else {
+                                preset.name.clone()
+                            };
+                            ui.selectable_value(&mut app.selected_preset, i, label);
                         }
                     });
 
                 ui.add_space(5.0);
 
+                // Primera fila de botones
                 ui.horizontal(|ui| {
+                    if ui.button("➕ ".to_string() + &translate(app, "add_preset")).clicked() {
+                        app.show_add_preset_dialog = true;
+                    }
+
                     if ui.button("📋 ".to_string() + &translate(app, "use_preset")).clicked() {
                         let preset = &app.presets[app.selected_preset];
                         app.process_name = preset.executable.clone();
@@ -111,6 +121,27 @@ fn render_presets_section(ui: &mut egui::Ui, app: &mut DsqApp) {
                         }
                     }
                 });
+
+                // Segunda fila de botones (solo para presets personalizados)
+                if app.presets[app.selected_preset].is_custom {
+                    ui.add_space(5.0);
+                    ui.horizontal(|ui| {
+                        if ui.button("✏ ".to_string() + &translate(app, "edit_preset")).clicked() {
+                            let preset = &app.presets[app.selected_preset];
+                            app.preset_to_edit = Some(preset.name.clone());
+                            app.new_preset_name = preset.name.clone();
+                            app.new_preset_executable = preset.executable.clone();
+                            app.new_preset_path = preset.path.clone();
+                            app.show_edit_preset_dialog = true;
+                        }
+
+                        if ui.button("🗑 ".to_string() + &translate(app, "delete_preset")).clicked() {
+                            let preset = &app.presets[app.selected_preset];
+                            app.preset_to_delete = Some(preset.name.clone());
+                            app.show_delete_confirmation = true;
+                        }
+                    });
+                }
             });
         });
         ui.add_space(10.0);

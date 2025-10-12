@@ -26,6 +26,11 @@ fn main() {
         Path::new(&target_dir).join("presets.json")
     );
 
+    let _ = fs::copy(
+        Path::new(&out_dir).join("presets_custom.json"),
+        Path::new(&target_dir).join("presets_custom.json")
+    );
+
     #[cfg(windows)]
     {
         let mut res = winres::WindowsResource::new();
