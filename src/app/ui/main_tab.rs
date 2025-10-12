@@ -12,6 +12,14 @@ use crate::platform::discord::{
 use super::components;
 
 pub fn render(ui: &mut egui::Ui, app: &mut DsqApp) {
+    // Solo actualizar cache de Discord cada 5 segundos
+    if app.should_check_discord() {
+        app.discord_running_cache = Some(is_discord_running());
+        if app.discord_running_cache == Some(false) {
+            app.discord_versions_cache = Some(get_installed_discord_versions());
+        }
+    }
+
     ui.vertical_centered(|ui| {
         render_rich_presence_status(ui, app);
         render_discord_detection(ui, app);
@@ -48,10 +56,14 @@ fn render_rich_presence_status(ui: &mut egui::Ui, app: &mut DsqApp) {
 }
 
 fn render_discord_detection(ui: &mut egui::Ui, app: &mut DsqApp) {
-    if !is_discord_running() {
+    // Usar el cache en lugar de verificar en cada frame
+    let discord_is_running = app.discord_running_cache.unwrap_or(true);
+
+    if !discord_is_running {
         ui.colored_label(egui::Color32::RED, translate(app, "discord_not_running"));
 
-        let installed_versions = get_installed_discord_versions();
+        let installed_versions = app.discord_versions_cache.as_ref().cloned().unwrap_or_default();
+
         if !installed_versions.is_empty() {
             ui.add_space(5.0);
             ui.label(translate(app, "start_discord_prompt"));
@@ -65,6 +77,8 @@ fn render_discord_detection(ui: &mut egui::Ui, app: &mut DsqApp) {
 
                     if ui.button(label).clicked() {
                         let _ = open_discord(version);
+                        // Invalidar cache para verificar inmediatamente
+                        app.invalidate_discord_cache();
                     }
                 }
             });

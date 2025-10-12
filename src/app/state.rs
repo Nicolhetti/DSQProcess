@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use std::time::{ Duration, Instant };
 use eframe::{ egui, App };
 use crate::shared::types::{ LangMap, Preset };
 use crate::shared::richpresence::RichPresenceManager;
@@ -19,6 +20,8 @@ pub struct DsqApp {
     pub rich_presence_enabled: bool,
     pub rich_presence: Option<RichPresenceManager>,
     pub current_simulated_game: Option<String>,
+
+    // Gestión de presets
     pub show_add_preset_dialog: bool,
     pub show_edit_preset_dialog: bool,
     pub show_delete_confirmation: bool,
@@ -27,6 +30,11 @@ pub struct DsqApp {
     pub new_preset_path: String,
     pub preset_to_delete: Option<String>,
     pub preset_to_edit: Option<String>,
+
+    // Cache para optimización
+    pub discord_running_cache: Option<bool>,
+    pub discord_versions_cache: Option<Vec<crate::platform::discord::DiscordVersion>>,
+    pub last_discord_check: Option<Instant>,
 }
 
 #[derive(PartialEq)]
@@ -39,6 +47,33 @@ pub enum Tab {
 impl Default for Tab {
     fn default() -> Self {
         Tab::Main
+    }
+}
+
+impl DsqApp {
+    pub fn should_check_discord(&mut self) -> bool {
+        const CHECK_INTERVAL: Duration = Duration::from_secs(5);
+
+        match self.last_discord_check {
+            None => {
+                self.last_discord_check = Some(Instant::now());
+                true
+            }
+            Some(last_check) => {
+                if last_check.elapsed() >= CHECK_INTERVAL {
+                    self.last_discord_check = Some(Instant::now());
+                    true
+                } else {
+                    false
+                }
+            }
+        }
+    }
+
+    pub fn invalidate_discord_cache(&mut self) {
+        self.discord_running_cache = None;
+        self.discord_versions_cache = None;
+        self.last_discord_check = None;
     }
 }
 

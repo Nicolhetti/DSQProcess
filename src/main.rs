@@ -14,8 +14,10 @@ use core::presets::{ load_presets, is_presets_outdated };
 
 fn main() -> Result<(), eframe::Error> {
     let options = eframe::NativeOptions {
-        viewport: egui::ViewportBuilder::default().with_inner_size([505.0, 500.0])
-        .with_resizable(false),
+        viewport: egui::ViewportBuilder
+            ::default()
+            .with_inner_size([505.0, 500.0])
+            .with_resizable(false),
         ..Default::default()
     };
 
@@ -46,6 +48,13 @@ fn main() -> Result<(), eframe::Error> {
     eframe::run_native(
         "DSQProcess",
         options,
-        Box::new(|_cc| Box::new(app))
+        Box::new(move |cc| {
+            // Configurar estilo para mejor rendimiento
+            let mut style = (*cc.egui_ctx.style()).clone();
+            style.animation_time = 0.1; // Reducir tiempo de animaciones
+            cc.egui_ctx.set_style(style);
+
+            Box::new(app)
+        })
     )
 }
