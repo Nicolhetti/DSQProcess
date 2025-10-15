@@ -175,6 +175,11 @@
         "path": "Games/The First Descendant/Win64"
     },
     {
+        "name": "The Midnight Walkers Demo",
+        "executable": "ProjectMW-Win64-Shipping.exe",
+        "path": "Games/The Midnight Walkers Demo/ProjectMW/Binaries/Win64"
+    },
+    {
         "name": "Towerborne",
         "executable": "BelfryClient-Win64-Shipping.exe",
         "path": "Games/Towerborne/Win64"
