@@ -149,6 +149,11 @@
         "executable": "SonicRacingCrossWorldsSteam.exe",
         "path": "Games/Sonic Racing CrossWorlds/Win64"
     },
+	{
+    	"name": "Space Marine 2 Free Demo",
+    	"executable": "Warhammer 40000 Space Marine 2 - Retail.exe",
+    	"path": "Games/Warhammer 40000 Space Marine 2/client_pc/root/bin/pc"
+	},
     {
         "name": "Starlight Re:Volver Demo",
         "executable": "HalcyonDive.exe",
@@ -198,5 +203,10 @@
         "name": "War Thunder",
         "executable": "aces.exe",
         "path": "Games/War Thunder/Win64"
-    }
+    },
+	{
+		"name": "Warframe",
+		"executable": "Warframe.x64.exe",
+		"path": "Games/Warframe"
+	}
 ]
