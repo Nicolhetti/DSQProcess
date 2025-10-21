@@ -23,12 +23,12 @@ fn main() {
 
     let _ = fs::copy(
         Path::new(&out_dir).join("presets.json"),
-        Path::new(&target_dir).join("presets.json")
+        Path::new(&target_dir).join("presets.json"),
     );
 
     let _ = fs::copy(
         Path::new(&out_dir).join("presets_custom.json"),
-        Path::new(&target_dir).join("presets_custom.json")
+        Path::new(&target_dir).join("presets_custom.json"),
     );
 
     #[cfg(windows)]
@@ -40,8 +40,8 @@ fn main() {
         res.set("ProductName", "DSQProcess");
         res.set("LegalCopyright", "© 2025 Nicolhetti");
         res.set("OriginalFilename", "DSQProcess.exe");
-        res.set("FileVersion", "0.4.1");
-        res.set("ProductVersion", "0.4.1");
+        res.set("FileVersion", "0.4.3");
+        res.set("ProductVersion", "0.4.3");
 
         res.compile().expect("Failed to compile resources");
     }
