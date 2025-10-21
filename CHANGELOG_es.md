@@ -1,3 +1,59 @@
+## 📝 Changelog — Versión `v0.4.3` (2025-10-21)
+
+### ✨ Nuevas funciones
+
+* 🎯 **Prefijo Automático Games/ en Rutas**
+  Gestión simplificada de rutas para procesos falsos.
+
+  * **Prefijo automático** - Solo escribe `Fortnite/Win64` en lugar de `Games/Fortnite/Win64`.
+  * **Vista previa visual** - Muestra la ruta completa `📁 Games/...` antes de crear el proceso.
+  * **Compatible con rutas anteriores** - Sigue aceptando rutas completas con prefijo `Games/`.
+  * **Presets actualizados** - Todos los presets oficiales ahora usan rutas simplificadas.
+
+* 🔄 **Reseteo Automático de Rich Presence**
+  Rich Presence ahora se actualiza automáticamente cuando terminan los procesos falsos.
+
+  * **Monitoreo de procesos** - Rastrea todos los procesos falsos en ejecución.
+  * **Auto-reseteo a "Esperando..."** - Rich Presence se limpia cuando el proceso se cierra.
+  * **Sin intervención manual** - Todo ocurre automáticamente en segundo plano.
+  * **Verificaciones optimizadas** - Verifica el estado del proceso cada 2 segundos.
+
+---
+
+### 🛠️ Mejoras
+
+* **Gestión de Rutas**: Experiencia de usuario simplificada con prefijo automático `Games/`
+  * Los usuarios solo necesitan especificar rutas relativas desde la carpeta Games
+  * Ruta completa mostrada como confirmación visual antes de la ejecución
+  * Definiciones de presets más limpias sin prefijo repetitivo `Games/`
+
+* **Ciclo de Vida de Rich Presence**: Automatización completa de actualizaciones de presencia en Discord
+  * Monitoreo inteligente de procesos generados
+  * Limpieza automática cuando los procesos terminan
+  * Mejor sincronización entre el estado de la app y el estado de Discord
+
+---
+
+### 🐞 Correcciones
+
+* **Persistencia de Rich Presence**: Corregido problema donde Rich Presence no se reseteaba después de cerrar el proceso falso
+  * Implementado sistema `ProcessMonitor` para rastrear procesos activos
+  * Agregadas verificaciones periódicas para detectar procesos terminados
+  * Rich Presence ahora regresa correctamente al estado "Esperando..."
+
+---
+
+### 🔧 Cambios Técnicos
+
+* Agregada estructura `ProcessMonitor` para gestionar ciclos de vida de procesos falsos
+* Implementado sistema de rastreo de PIDs usando la crate `sysinfo`
+* Mejorada función `create_fake_process()` para retornar ID del proceso
+* Agregado método `check_dead_processes()` con intervalo de verificación de 2 segundos
+* Actualizados todos los presets para usar formato de ruta simplificado
+* Modificado `process.rs` para agregar automáticamente `Games/` a rutas relativas
+
+---
+
 ## 📝 Changelog — Versión `v0.4.2` (2025-10-11)
 
 ### ✨ Nuevas funciones

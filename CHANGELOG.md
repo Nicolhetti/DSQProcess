@@ -1,3 +1,59 @@
+## 📝 Changelog — Version `v0.4.3` (2025-10-21)
+
+### ✨ New Features
+
+* 🎯 **Automatic Games/ Path Prefix**
+  Simplified path management for fake processes.
+
+  * **Automatic prefix** - Just write `Fortnite/Win64` instead of `Games/Fortnite/Win64`.
+  * **Visual preview** - Shows full path `📁 Games/...` before creating process.
+  * **Backward compatible** - Still accepts full paths with `Games/` prefix.
+  * **Updated presets** - All official presets now use simplified paths.
+
+* 🔄 **Automatic Rich Presence Reset**
+  Rich Presence now automatically updates when fake processes end.
+
+  * **Process monitoring** - Tracks all running fake processes.
+  * **Auto-reset to "Waiting..."** - Rich Presence clears when process closes.
+  * **No manual intervention** - Everything happens automatically in background.
+  * **Optimized checks** - Verifies process status every 2 seconds.
+
+---
+
+### 🛠️ Improvements
+
+* **Path Management**: Simplified user experience with automatic `Games/` prefix
+  * Users only need to specify relative paths from Games folder
+  * Full path displayed as visual confirmation before execution
+  * Cleaner preset definitions without repetitive `Games/` prefix
+
+* **Rich Presence Lifecycle**: Complete automation of Discord presence updates
+  * Intelligent monitoring of spawned processes
+  * Automatic cleanup when processes terminate
+  * Better synchronization between app state and Discord status
+
+---
+
+### 🐞 Fixes
+
+* **Rich Presence Persistence**: Fixed issue where Rich Presence wouldn't reset after closing fake process
+  * Implemented `ProcessMonitor` system to track active processes
+  * Added periodic checks to detect terminated processes
+  * Rich Presence now correctly returns to "Esperando..." state
+
+---
+
+### 🔧 Technical Changes
+
+* Added `ProcessMonitor` struct for managing fake process lifecycles
+* Implemented PID tracking system using `sysinfo` crate
+* Enhanced `create_fake_process()` to return process ID
+* Added `check_dead_processes()` method with 2-second check interval
+* Updated all presets to use simplified path format
+* Modified `process.rs` to automatically prepend `Games/` to relative paths
+
+---
+
 ## 📝 Changelog — Version `v0.4.2` (2025-10-11)
 
 ### ✨ New Features
