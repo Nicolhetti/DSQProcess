@@ -23,3 +23,10 @@ path = "src/main.rs"
 [[bin]]
 name = "DSQChild"
 path = "src/child/main.rs"
+
+[profile.release]
+opt-level = "z"
+lto = true
+codegen-units = 1
+strip = true
+panic = "abort"
