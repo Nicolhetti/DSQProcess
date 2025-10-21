@@ -17,7 +17,12 @@
     {
         "name": "Battlefield™ 6",
         "executable": "bf6.exe",
-        "path": "Battlefield 6/SP"
+        "path": "Battlefield 6"
+    },
+    {
+        "name": "Bloons TD 6",
+        "executable": "BloonsTD6.exe",
+        "path": "Bloons TD 6"
     },
     {
         "name": "Blue Protocol: Star Resonance",
