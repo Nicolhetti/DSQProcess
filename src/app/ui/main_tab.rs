@@ -271,7 +271,11 @@ fn handle_start_process(app: &mut DsqApp) {
             };
 
         app.status = match result {
-            Ok(_) => {
+            Ok(pid) => {
+                // Registrar el proceso en el monitor
+                app.process_monitor
+                    .add_process(pid, app.process_name.clone());
+
                 if app.rich_presence_enabled {
                     if let Some(ref mut rp) = app.rich_presence {
                         let game_display_name = app
@@ -282,17 +286,23 @@ fn handle_start_process(app: &mut DsqApp) {
                             .unwrap_or_else(|| app.process_name.replace(".exe", ""));
 
                         if let Err(e) = rp.set_activity(Some(game_display_name.clone())) {
-                            app.status = translate(app, "rich_presence_error")
-                                .replace("{error}", &e.to_string());
+                            translate(app, "rich_presence_error").replace("{error}", &e.to_string())
                         } else {
                             app.current_simulated_game = Some(game_display_name);
+                            translate(app, "success")
+                                .replace("{name}", &app.process_name)
+                                .replace("{path}", &full_path)
                         }
+                    } else {
+                        translate(app, "success")
+                            .replace("{name}", &app.process_name)
+                            .replace("{path}", &full_path)
                     }
+                } else {
+                    translate(app, "success")
+                        .replace("{name}", &app.process_name)
+                        .replace("{path}", &full_path)
                 }
-
-                translate(app, "success")
-                    .replace("{name}", &app.process_name)
-                    .replace("{path}", &full_path)
             }
             Err(e) => translate(app, "error").replace("{error}", &e.to_string()),
         };

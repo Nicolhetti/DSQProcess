@@ -1,9 +1,10 @@
-use std::collections::HashMap;
-use std::time::{ Duration, Instant };
-use eframe::{ egui, App };
-use crate::shared::types::{ LangMap, Preset };
-use crate::shared::richpresence::RichPresenceManager;
 use crate::app::ui::render_ui;
+use crate::core::process::ProcessMonitor;
+use crate::shared::richpresence::RichPresenceManager;
+use crate::shared::types::{LangMap, Preset};
+use eframe::{egui, App};
+use std::collections::HashMap;
+use std::time::{Duration, Instant};
 
 #[derive(Default)]
 pub struct DsqApp {
@@ -35,6 +36,10 @@ pub struct DsqApp {
     pub discord_running_cache: Option<bool>,
     pub discord_versions_cache: Option<Vec<crate::platform::discord::DiscordVersion>>,
     pub last_discord_check: Option<Instant>,
+
+    // Monitor de procesos
+    pub process_monitor: ProcessMonitor,
+    pub last_process_check: Option<Instant>,
 }
 
 #[derive(PartialEq)]
@@ -75,10 +80,48 @@ impl DsqApp {
         self.discord_versions_cache = None;
         self.last_discord_check = None;
     }
+
+    pub fn should_check_processes(&mut self) -> bool {
+        const CHECK_INTERVAL: Duration = Duration::from_secs(2);
+
+        match self.last_process_check {
+            None => {
+                self.last_process_check = Some(Instant::now());
+                true
+            }
+            Some(last_check) => {
+                if last_check.elapsed() >= CHECK_INTERVAL {
+                    self.last_process_check = Some(Instant::now());
+                    true
+                } else {
+                    false
+                }
+            }
+        }
+    }
+
+    pub fn check_dead_processes(&mut self) {
+        if !self.should_check_processes() {
+            return;
+        }
+
+        let dead_processes = self.process_monitor.check_and_remove_dead_processes();
+
+        if !dead_processes.is_empty() && self.rich_presence_enabled {
+            // Si hay procesos que murieron, resetear Rich Presence
+            if let Some(ref mut rp) = self.rich_presence {
+                let _ = rp.set_activity(None);
+                self.current_simulated_game = None;
+            }
+        }
+    }
 }
 
 impl App for DsqApp {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
+        // Verificar procesos muertos periódicamente
+        self.check_dead_processes();
+
         render_ui(self, ctx);
     }
 }
