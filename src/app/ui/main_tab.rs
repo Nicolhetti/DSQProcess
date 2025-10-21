@@ -1,15 +1,12 @@
-use eframe::egui;
+use super::components;
 use crate::app::state::DsqApp;
 use crate::app::translate::translate;
-use crate::core::presets::{ load_presets, update_presets_file, is_presets_outdated };
+use crate::core::presets::{is_presets_outdated, load_presets, update_presets_file};
 use crate::core::process::create_fake_process;
 use crate::platform::discord::{
-    is_discord_running,
-    get_installed_discord_versions,
-    open_discord,
-    DiscordVersion,
+    get_installed_discord_versions, is_discord_running, open_discord, DiscordVersion,
 };
-use super::components;
+use eframe::egui;
 
 pub fn render(ui: &mut egui::Ui, app: &mut DsqApp) {
     // Solo actualizar cache de Discord cada 5 segundos
@@ -32,23 +29,19 @@ pub fn render(ui: &mut egui::Ui, app: &mut DsqApp) {
 
 fn render_rich_presence_status(ui: &mut egui::Ui, app: &mut DsqApp) {
     if app.rich_presence_enabled {
-        let status_text = if
-            app.rich_presence.is_some() &&
-            app.rich_presence.as_ref().unwrap().is_connected()
-        {
-            translate(app, "rich_presence_connected")
-        } else {
-            translate(app, "rich_presence_disconnected")
-        };
+        let status_text =
+            if app.rich_presence.is_some() && app.rich_presence.as_ref().unwrap().is_connected() {
+                translate(app, "rich_presence_connected")
+            } else {
+                translate(app, "rich_presence_disconnected")
+            };
 
-        let color = if
-            app.rich_presence.is_some() &&
-            app.rich_presence.as_ref().unwrap().is_connected()
-        {
-            egui::Color32::GREEN
-        } else {
-            egui::Color32::RED
-        };
+        let color =
+            if app.rich_presence.is_some() && app.rich_presence.as_ref().unwrap().is_connected() {
+                egui::Color32::GREEN
+            } else {
+                egui::Color32::RED
+            };
 
         ui.colored_label(color, status_text);
         ui.add_space(10.0);
@@ -62,7 +55,11 @@ fn render_discord_detection(ui: &mut egui::Ui, app: &mut DsqApp) {
     if !discord_is_running {
         ui.colored_label(egui::Color32::RED, translate(app, "discord_not_running"));
 
-        let installed_versions = app.discord_versions_cache.as_ref().cloned().unwrap_or_default();
+        let installed_versions = app
+            .discord_versions_cache
+            .as_ref()
+            .cloned()
+            .unwrap_or_default();
 
         if !installed_versions.is_empty() {
             ui.add_space(5.0);
@@ -99,8 +96,7 @@ fn render_presets_section(ui: &mut egui::Ui, app: &mut DsqApp) {
                 ui.heading("🎮 Presets");
                 ui.add_space(5.0);
 
-                egui::ComboBox
-                    ::from_label("")
+                egui::ComboBox::from_label("")
                     .selected_text(&app.presets[app.selected_preset].name)
                     .width(300.0)
                     .show_ui(ui, |ui| {
@@ -118,17 +114,26 @@ fn render_presets_section(ui: &mut egui::Ui, app: &mut DsqApp) {
 
                 // Primera fila de botones
                 ui.horizontal(|ui| {
-                    if ui.button("➕ ".to_string() + &translate(app, "add_preset")).clicked() {
+                    if ui
+                        .button("➕ ".to_string() + &translate(app, "add_preset"))
+                        .clicked()
+                    {
                         app.show_add_preset_dialog = true;
                     }
 
-                    if ui.button("📋 ".to_string() + &translate(app, "use_preset")).clicked() {
+                    if ui
+                        .button("📋 ".to_string() + &translate(app, "use_preset"))
+                        .clicked()
+                    {
                         let preset = &app.presets[app.selected_preset];
                         app.process_name = preset.executable.clone();
                         app.custom_path = preset.path.clone();
                     }
 
-                    if ui.button("🔍 ".to_string() + &translate(app, "check_presets")).clicked() {
+                    if ui
+                        .button("🔍 ".to_string() + &translate(app, "check_presets"))
+                        .clicked()
+                    {
                         app.presets_outdated = is_presets_outdated();
                         if !app.presets_outdated {
                             app.status = translate(app, "presets_up_to_date");
@@ -140,7 +145,10 @@ fn render_presets_section(ui: &mut egui::Ui, app: &mut DsqApp) {
                 if app.presets[app.selected_preset].is_custom {
                     ui.add_space(5.0);
                     ui.horizontal(|ui| {
-                        if ui.button("✏ ".to_string() + &translate(app, "edit_preset")).clicked() {
+                        if ui
+                            .button("✏ ".to_string() + &translate(app, "edit_preset"))
+                            .clicked()
+                        {
                             let preset = &app.presets[app.selected_preset];
                             app.preset_to_edit = Some(preset.name.clone());
                             app.new_preset_name = preset.name.clone();
@@ -149,7 +157,10 @@ fn render_presets_section(ui: &mut egui::Ui, app: &mut DsqApp) {
                             app.show_edit_preset_dialog = true;
                         }
 
-                        if ui.button("🗑 ".to_string() + &translate(app, "delete_preset")).clicked() {
+                        if ui
+                            .button("🗑 ".to_string() + &translate(app, "delete_preset"))
+                            .clicked()
+                        {
                             let preset = &app.presets[app.selected_preset];
                             app.preset_to_delete = Some(preset.name.clone());
                             app.show_delete_confirmation = true;
@@ -169,7 +180,10 @@ fn render_outdated_presets_warning(ui: &mut egui::Ui, app: &mut DsqApp) {
             ui.vertical_centered(|ui| {
                 ui.colored_label(egui::Color32::YELLOW, translate(app, "presets_outdated"));
                 ui.add_space(5.0);
-                if ui.button("🔄 ".to_string() + &translate(app, "update_presets")).clicked() {
+                if ui
+                    .button("🔄 ".to_string() + &translate(app, "update_presets"))
+                    .clicked()
+                {
                     match update_presets_file() {
                         Ok(_) => {
                             app.status = translate(app, "presets_updated");
@@ -206,9 +220,33 @@ fn render_process_configuration(ui: &mut egui::Ui, app: &mut DsqApp) {
                 ui.text_edit_singleline(&mut app.custom_path);
             });
 
+            // Mostrar la ruta completa que se usará
+            if !app.custom_path.is_empty() {
+                let full_path = if app.custom_path.starts_with("Games/")
+                    || app.custom_path.starts_with("Games\\")
+                {
+                    app.custom_path.clone()
+                } else {
+                    format!(
+                        "Games/{}",
+                        app.custom_path
+                            .trim_start_matches('/')
+                            .trim_start_matches('\\')
+                    )
+                };
+                ui.add_space(3.0);
+                ui.colored_label(
+                    egui::Color32::from_rgb(108, 117, 125),
+                    format!("📁 {}", full_path),
+                );
+            }
+
             ui.add_space(10.0);
 
-            if ui.button("🚀 ".to_string() + &translate(app, "start_process")).clicked() {
+            if ui
+                .button("🚀 ".to_string() + &translate(app, "start_process"))
+                .clicked()
+            {
                 handle_start_process(app);
             }
         });
@@ -218,21 +256,34 @@ fn render_process_configuration(ui: &mut egui::Ui, app: &mut DsqApp) {
 fn handle_start_process(app: &mut DsqApp) {
     if !app.process_name.trim().is_empty() {
         let result = create_fake_process(&app.custom_path, &app.process_name, 15);
+
+        // Calcular la ruta completa para el mensaje de éxito
+        let full_path =
+            if app.custom_path.starts_with("Games/") || app.custom_path.starts_with("Games\\") {
+                app.custom_path.clone()
+            } else {
+                format!(
+                    "Games/{}",
+                    app.custom_path
+                        .trim_start_matches('/')
+                        .trim_start_matches('\\')
+                )
+            };
+
         app.status = match result {
             Ok(_) => {
                 if app.rich_presence_enabled {
                     if let Some(ref mut rp) = app.rich_presence {
-                        let game_display_name = app.presets
+                        let game_display_name = app
+                            .presets
                             .iter()
                             .find(|preset| preset.executable == app.process_name)
                             .map(|preset| preset.name.clone())
                             .unwrap_or_else(|| app.process_name.replace(".exe", ""));
 
                         if let Err(e) = rp.set_activity(Some(game_display_name.clone())) {
-                            app.status = translate(app, "rich_presence_error").replace(
-                                "{error}",
-                                &e.to_string()
-                            );
+                            app.status = translate(app, "rich_presence_error")
+                                .replace("{error}", &e.to_string());
                         } else {
                             app.current_simulated_game = Some(game_display_name);
                         }
@@ -241,7 +292,7 @@ fn handle_start_process(app: &mut DsqApp) {
 
                 translate(app, "success")
                     .replace("{name}", &app.process_name)
-                    .replace("{path}", &app.custom_path)
+                    .replace("{path}", &full_path)
             }
             Err(e) => translate(app, "error").replace("{error}", &e.to_string()),
         };
