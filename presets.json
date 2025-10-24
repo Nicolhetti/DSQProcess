@@ -120,6 +120,11 @@
         "path": "Perplexity/Comet/Application"
     },
     {
+		"name": "Plants vs. Zombies™: Replanted",
+		"executable": "Replanted.exe",
+		"path": "PVZ Replanted",
+    },
+    {
         "name": "R.E.P.O.",
         "executable": "REPO.exe",
         "path": "REPO"
