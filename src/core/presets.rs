@@ -50,6 +50,22 @@ pub fn load_presets() -> Vec<Preset> {
     all_presets
 }
 
+fn write_atomic(path: &str, contents: &[u8]) -> std::io::Result<()> {
+    use std::{fs, io::Write, path::Path};
+    let tmp = format!("{}.tmp", path);
+    {
+        let mut f = fs::File::create(&tmp)?;
+        f.write_all(contents)?;
+    }
+    if let Err(e) = fs::rename(&tmp, path) {
+        if Path::new(path).exists() {
+            let _ = fs::remove_file(path);
+        }
+        fs::rename(&tmp, path).map_err(|_| e)?;
+    }
+    Ok(())
+}
+
 /// Carga solo los presets personalizados
 fn load_custom_presets() -> Vec<Preset> {
     if let Ok(data) = fs::read_to_string(CUSTOM_PRESETS_FILE) {
@@ -99,13 +115,15 @@ pub fn edit_custom_preset(
 ) -> Result<(), Box<dyn std::error::Error>> {
     let mut custom_presets = load_custom_presets();
 
-    if custom_presets
-        .iter()
-        .any(|p| p.name.eq_ignore_ascii_case(&new_preset.name) && p.name != old_name)
-    {
+    if custom_presets.iter().any(|p| {
+        p.name.eq_ignore_ascii_case(&new_preset.name) && !p.name.eq_ignore_ascii_case(old_name)
+    }) {
         return Err("A preset with this name already exists".into());
     }
-    if let Some(preset) = custom_presets.iter_mut().find(|p| p.name == old_name) {
+    if let Some(preset) = custom_presets
+        .iter_mut()
+        .find(|p| p.name.eq_ignore_ascii_case(old_name))
+    {
         *preset = new_preset;
         save_custom_presets(&custom_presets)?;
         Ok(())
@@ -127,17 +145,7 @@ fn load_metadata() -> PresetsMetadata {
 /// Guarda los metadatos de presets
 fn save_metadata(metadata: &PresetsMetadata) -> Result<(), Box<dyn std::error::Error>> {
     let json = serde_json::to_string_pretty(metadata)?;
-    let tmp = format!("{}.tmp", PRESETS_METADATA_FILE);
-    {
-        let mut f = fs::File::create(&tmp)?;
-        f.write_all(json.as_bytes())?;
-    }
-    if let Err(e) = fs::rename(&tmp, PRESETS_METADATA_FILE) {
-        if std::path::Path::new(PRESETS_METADATA_FILE).exists() {
-            let _ = fs::remove_file(PRESETS_METADATA_FILE);
-        }
-        fs::rename(&tmp, PRESETS_METADATA_FILE).map_err(|_| e)?;
-    }
+    write_atomic(PRESETS_METADATA_FILE, json.as_bytes())?;
     Ok(())
 }
 
@@ -253,8 +261,8 @@ fn check_remote_version() -> Result<String, Box<dyn std::error::Error>> {
         .send()?;
 
     if response.status().as_u16() == 404 {
-        // Si no existe el release de presets, usar fallback
-        return Ok("1.0.0".to_string());
+        // No hay release/tag de presets: informar error para que el caller no alerte update
+        return Err("presets release not found".into());
     }
 
     let release: GitHubRelease = response.json()?;
@@ -297,17 +305,7 @@ pub fn update_presets_file() -> Result<(), Box<dyn std::error::Error>> {
     let _: Vec<Preset> = serde_json::from_str(&presets_content)?;
 
     // Guardar el archivo
-    let tmp = format!("{}.tmp", PRESETS_FILE);
-    {
-        let mut f = fs::File::create(&tmp)?;
-        f.write_all(presets_content.as_bytes())?;
-    }
-    if let Err(e) = fs::rename(&tmp, PRESETS_FILE) {
-        if std::path::Path::new(PRESETS_FILE).exists() {
-            let _ = fs::remove_file(PRESETS_FILE);
-        }
-        fs::rename(&tmp, PRESETS_FILE).map_err(|_| e)?;
-    }
+    write_atomic(PRESETS_FILE, presets_content.as_bytes())?;
 
     // Actualizar metadata
     let metadata = PresetsMetadata {
