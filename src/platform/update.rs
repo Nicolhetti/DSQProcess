@@ -1,4 +1,4 @@
-pub const VERSION: &str = "0.4.4";
+pub const VERSION: &str = env!("CARGO_PKG_VERSION");
 
 pub fn check_for_updates(
     current_version: &str,

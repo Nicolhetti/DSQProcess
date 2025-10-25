@@ -124,14 +124,22 @@ fn save_metadata(metadata: &PresetsMetadata) -> Result<(), Box<dyn std::error::E
     Ok(())
 }
 
-/// Calcula el hash SHA256 de un string
+/// Calcula el hash SHA-256 criptográfico de un string
+///
+/// Usa SHA-256 en lugar de DefaultHasher porque:
+/// - Es determinístico (mismo contenido = mismo hash siempre)
+/// - Es criptográficamente seguro (resistente a colisiones)
+/// - Es estándar de la industria para verificación de integridad
+///
+/// Retorna el hash como string hexadecimal en minúsculas (64 caracteres)
 fn calculate_hash(content: &str) -> String {
-    use std::collections::hash_map::DefaultHasher;
-    use std::hash::{Hash, Hasher};
+    use sha2::{Digest, Sha256};
 
-    let mut hasher = DefaultHasher::new();
-    content.hash(&mut hasher);
-    format!("{:x}", hasher.finish())
+    let mut hasher = Sha256::new();
+    hasher.update(content.as_bytes());
+    let result = hasher.finalize();
+
+    hex::encode(result)
 }
 
 /// Obtiene el timestamp actual
@@ -145,13 +153,15 @@ fn current_timestamp() -> u64 {
 /// Verifica si el cache ha expirado
 fn is_cache_expired(last_check: u64) -> bool {
     let now = current_timestamp();
-    now - last_check > CACHE_TTL_SECONDS
+    // Usar saturating_sub para evitar underflow si el reloj del sistema retrocede
+    now.saturating_sub(last_check) > CACHE_TTL_SECONDS
 }
 
 /// Estructura para el response de GitHub API
 #[derive(Deserialize)]
 struct GitHubRelease {
     tag_name: String,
+    name: Option<String>,
     assets: Vec<GitHubAsset>,
 }
 
@@ -159,6 +169,26 @@ struct GitHubRelease {
 struct GitHubAsset {
     name: String,
     browser_download_url: String,
+    updated_at: Option<String>, // fallback marker
+}
+
+fn extract_remote_version(rel: &GitHubRelease) -> String {
+    if let Some(title) = &rel.name {
+        // naive parse: last 'v' followed by digits/dots (vX.Y.Z)
+        if let Some(i) = title.rfind('v') {
+            let cand = title[i + 1..].trim();
+            if cand.chars().all(|c| c.is_ascii_digit() || c == '.') && cand.split('.').count() == 3
+            {
+                return cand.to_string();
+            }
+        }
+    }
+    if let Some(a) = rel.assets.iter().find(|a| a.name == "presets.json") {
+        if let Some(ts) = &a.updated_at {
+            return ts.clone();
+        }
+    }
+    rel.tag_name.clone()
 }
 
 /// Verifica si los presets están desactualizados (con cache)
@@ -214,7 +244,7 @@ fn check_remote_version() -> Result<String, Box<dyn std::error::Error>> {
     }
 
     let release: GitHubRelease = response.json()?;
-    Ok(release.tag_name.trim_start_matches('v').to_string())
+    Ok(extract_remote_version(&release))
 }
 
 /// Actualiza el archivo de presets desde GitHub Release
@@ -257,7 +287,7 @@ pub fn update_presets_file() -> Result<(), Box<dyn std::error::Error>> {
 
     // Actualizar metadata
     let metadata = PresetsMetadata {
-        version: release.tag_name.trim_start_matches('v').to_string(),
+        version: extract_remote_version(&release),
         last_check: current_timestamp(),
         hash: calculate_hash(&presets_content),
     };

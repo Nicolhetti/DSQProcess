@@ -55,7 +55,7 @@ impl ProcessMonitor {
                     // Eliminar el ejecutable cuando el proceso muere
                     if proc_info.exe_path.exists() {
                         if let Err(e) = std::fs::remove_file(&proc_info.exe_path) {
-                            eprintln!("Error al eliminar {}: {}", proc_info.exe_path.display(), e);
+                            log::warn!("Failed to delete executable {}: {}", proc_info.exe_path.display(), e);
                         }
                     }
                 }

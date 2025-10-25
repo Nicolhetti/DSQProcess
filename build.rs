@@ -40,8 +40,10 @@ fn main() {
         res.set("ProductName", "DSQProcess");
         res.set("LegalCopyright", "© 2025 Nicolhetti");
         res.set("OriginalFilename", "DSQProcess.exe");
-        res.set("FileVersion", "0.4.4");
-        res.set("ProductVersion", "0.4.4");
+
+        let ver = env::var("CARGO_PKG_VERSION").unwrap();
+        res.set("FileVersion", &ver);
+        res.set("ProductVersion", &ver);
 
         res.compile().expect("Failed to compile resources");
     }
