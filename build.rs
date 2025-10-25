@@ -4,7 +4,18 @@ use std::path::Path;
 
 fn main() {
     let out_dir = env::var("CARGO_MANIFEST_DIR").unwrap();
-    let target_dir = format!("{}/target/release", out_dir);
+    let profile = env::var("PROFILE").unwrap_or_else(|_| "debug".into());
+    let target_base =
+        env::var("CARGO_TARGET_DIR").unwrap_or_else(|_| format!("{}/target", out_dir));
+    // Prefer target/<triple>/<profile> when it exists; fallback to target/<profile>
+    let triple = env::var("TARGET").unwrap_or_default();
+    let triple_dir = Path::new(&target_base).join(&triple).join(&profile);
+    let default_dir = Path::new(&target_base).join(&profile);
+    let target_dir = if triple_dir.exists() {
+        triple_dir
+    } else {
+        default_dir
+    };
 
     let lang_src = Path::new(&out_dir).join("lang");
     let lang_dst = Path::new(&target_dir).join("lang");
@@ -14,11 +25,13 @@ fn main() {
     }
 
     fs::create_dir_all(&lang_dst).unwrap();
-    for entry in fs::read_dir(&lang_src).unwrap() {
-        let entry = entry.unwrap();
-        let src_path = entry.path();
-        let filename = entry.file_name();
-        fs::copy(src_path, lang_dst.join(filename)).unwrap();
+    if lang_src.exists() {
+        for entry in fs::read_dir(&lang_src).unwrap() {
+            let entry = entry.unwrap();
+            let src_path = entry.path();
+            let filename = entry.file_name();
+            fs::copy(src_path, lang_dst.join(filename)).unwrap();
+        }
     }
 
     let _ = fs::copy(

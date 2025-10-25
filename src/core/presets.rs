@@ -97,6 +97,12 @@ pub fn edit_custom_preset(
 ) -> Result<(), Box<dyn std::error::Error>> {
     let mut custom_presets = load_custom_presets();
 
+    if custom_presets
+        .iter()
+        .any(|p| p.name.eq_ignore_ascii_case(&new_preset.name) && p.name != old_name)
+    {
+        return Err("A preset with this name already exists".into());
+    }
     if let Some(preset) = custom_presets.iter_mut().find(|p| p.name == old_name) {
         *preset = new_preset;
         save_custom_presets(&custom_presets)?;
@@ -119,8 +125,12 @@ fn load_metadata() -> PresetsMetadata {
 /// Guarda los metadatos de presets
 fn save_metadata(metadata: &PresetsMetadata) -> Result<(), Box<dyn std::error::Error>> {
     let json = serde_json::to_string_pretty(metadata)?;
-    let mut file = fs::File::create(PRESETS_METADATA_FILE)?;
-    file.write_all(json.as_bytes())?;
+    let tmp = format!("{}.tmp", PRESETS_METADATA_FILE);
+    {
+        let mut f = fs::File::create(&tmp)?;
+        f.write_all(json.as_bytes())?;
+    }
+    fs::rename(&tmp, PRESETS_METADATA_FILE)?;
     Ok(())
 }
 

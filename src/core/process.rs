@@ -55,7 +55,11 @@ impl ProcessMonitor {
                     // Eliminar el ejecutable cuando el proceso muere
                     if proc_info.exe_path.exists() {
                         if let Err(e) = std::fs::remove_file(&proc_info.exe_path) {
-                            log::warn!("Failed to delete executable {}: {}", proc_info.exe_path.display(), e);
+                            log::warn!(
+                                "Failed to delete executable {}: {}",
+                                proc_info.exe_path.display(),
+                                e
+                            );
                         }
                     }
                 }
@@ -94,7 +98,13 @@ pub fn create_fake_process(
 
     let new_exe_path = target_folder.join(exe_name);
     let current_exe = std::env::current_exe()?;
-    let child_path = current_exe.parent().unwrap().join(if cfg!(windows) {
+    let parent = current_exe.parent().ok_or_else(|| {
+        std::io::Error::new(
+            std::io::ErrorKind::Other,
+            "Executable has no parent directory",
+        )
+    })?;
+    let child_path = parent.join(if cfg!(windows) {
         "DSQChild.exe"
     } else {
         "DSQChild"

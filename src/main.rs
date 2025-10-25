@@ -13,6 +13,7 @@ use shared::richpresence::RichPresenceManager;
 use core::presets::{ load_presets, is_presets_outdated };
 
 fn main() -> Result<(), eframe::Error> {
+    let _ = env_logger::try_init();
     let options = eframe::NativeOptions {
         viewport: egui::ViewportBuilder
             ::default()
