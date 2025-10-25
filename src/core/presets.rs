@@ -224,11 +224,7 @@ pub fn is_presets_outdated() -> bool {
 
             // Actualizar metadata con el timestamp actual
             let new_metadata = PresetsMetadata {
-                version: if is_outdated {
-                    remote_version
-                } else {
-                    metadata.version.clone()
-                },
+                version: metadata.version.clone(),
                 last_check: current_timestamp(),
                 hash: metadata.hash.clone(),
             };
@@ -293,7 +289,7 @@ pub fn update_presets_file() -> Result<(), Box<dyn std::error::Error>> {
     // Descargar el archivo
     let presets_content = client
         .get(&preset_asset.browser_download_url)
-        .header("User-Agent", "DSQProcess")
+        .header("User-Agent", APP_UA)
         .send()?
         .text()?;
 
