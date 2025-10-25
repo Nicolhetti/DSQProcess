@@ -1,4 +1,4 @@
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use std::sync::{Arc, Mutex};
 use sysinfo::{Pid, System};
 
@@ -10,6 +10,7 @@ pub struct ProcessMonitor {
 pub struct ProcessInfo {
     pub pid: u32,
     pub exe_name: String,
+    pub exe_path: PathBuf,
 }
 
 impl ProcessMonitor {
@@ -19,9 +20,13 @@ impl ProcessMonitor {
         }
     }
 
-    pub fn add_process(&self, pid: u32, exe_name: String) {
+    pub fn add_process(&self, pid: u32, exe_name: String, exe_path: PathBuf) {
         if let Ok(mut procs) = self.processes.lock() {
-            procs.push(ProcessInfo { pid, exe_name });
+            procs.push(ProcessInfo {
+                pid,
+                exe_name,
+                exe_path,
+            });
         }
     }
 
@@ -46,6 +51,17 @@ impl ProcessMonitor {
 
                 if !is_alive {
                     removed.push(proc_info.exe_name.clone());
+
+                    // Eliminar el ejecutable cuando el proceso muere
+                    if proc_info.exe_path.exists() {
+                        if let Err(e) = std::fs::remove_file(&proc_info.exe_path) {
+                            log::warn!(
+                                "Failed to delete executable {}: {}",
+                                proc_info.exe_path.display(),
+                                e
+                            );
+                        }
+                    }
                 }
 
                 is_alive
@@ -66,7 +82,7 @@ pub fn create_fake_process(
     folder: &str,
     exe_name: &str,
     duration_min: u64,
-) -> std::io::Result<u32> {
+) -> std::io::Result<(u32, PathBuf)> {
     // Agregar automáticamente "Games/" si la ruta no empieza con ella
     let full_path = if folder.starts_with("Games/") || folder.starts_with("Games\\") {
         folder.to_string()
@@ -82,7 +98,13 @@ pub fn create_fake_process(
 
     let new_exe_path = target_folder.join(exe_name);
     let current_exe = std::env::current_exe()?;
-    let child_path = current_exe.parent().unwrap().join(if cfg!(windows) {
+    let parent = current_exe.parent().ok_or_else(|| {
+        std::io::Error::new(
+            std::io::ErrorKind::Other,
+            "Executable has no parent directory",
+        )
+    })?;
+    let child_path = parent.join(if cfg!(windows) {
         "DSQChild.exe"
     } else {
         "DSQChild"
@@ -93,5 +115,5 @@ pub fn create_fake_process(
         .arg(duration_min.to_string())
         .spawn()?;
 
-    Ok(child.id())
+    Ok((child.id(), new_exe_path))
 }

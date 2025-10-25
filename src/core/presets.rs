@@ -1,12 +1,26 @@
 use crate::shared::types::Preset;
+use serde::{Deserialize, Serialize};
 use std::fs;
-use std::io::Write;
+use std::time::{SystemTime, UNIX_EPOCH};
 
-pub const PRESETS_URL: &str =
-    "https://raw.githubusercontent.com/Nicolhetti/DSQProcess/refs/heads/master/presets.json";
-
+// Usar GitHub Releases API
+const GITHUB_API_URL: &str =
+    "https://api.github.com/repos/Nicolhetti/DSQProcess/releases/tags/presets";
 const PRESETS_FILE: &str = "presets.json";
 const CUSTOM_PRESETS_FILE: &str = "presets_custom.json";
+const PRESETS_METADATA_FILE: &str = "presets_metadata.json";
+
+const APP_UA: &str = concat!("DSQProcess/", env!("CARGO_PKG_VERSION"));
+
+// Cache de 6 horas para evitar demasiadas peticiones
+const CACHE_TTL_SECONDS: u64 = 21600;
+
+#[derive(Serialize, Deserialize, Default)]
+struct PresetsMetadata {
+    version: String,
+    last_check: u64,
+    hash: String,
+}
 
 /// Carga todos los presets (oficiales + personalizados)
 pub fn load_presets() -> Vec<Preset> {
@@ -15,7 +29,6 @@ pub fn load_presets() -> Vec<Preset> {
     // Cargar presets oficiales
     if let Ok(data) = fs::read_to_string(PRESETS_FILE) {
         if let Ok(mut presets) = serde_json::from_str::<Vec<Preset>>(&data) {
-            // Marcar como no personalizados
             for preset in &mut presets {
                 preset.is_custom = false;
             }
@@ -26,7 +39,6 @@ pub fn load_presets() -> Vec<Preset> {
     // Cargar presets personalizados
     if let Ok(data) = fs::read_to_string(CUSTOM_PRESETS_FILE) {
         if let Ok(mut presets) = serde_json::from_str::<Vec<Preset>>(&data) {
-            // Marcar como personalizados
             for preset in &mut presets {
                 preset.is_custom = true;
             }
@@ -35,6 +47,22 @@ pub fn load_presets() -> Vec<Preset> {
     }
 
     all_presets
+}
+
+fn write_atomic(path: &str, contents: &[u8]) -> std::io::Result<()> {
+    use std::{fs, io::Write, path::Path};
+    let tmp = format!("{}.tmp", path);
+    {
+        let mut f = fs::File::create(&tmp)?;
+        f.write_all(contents)?;
+    }
+    if let Err(e) = fs::rename(&tmp, path) {
+        if Path::new(path).exists() {
+            let _ = fs::remove_file(path);
+        }
+        fs::rename(&tmp, path).map_err(|_| e)?;
+    }
+    Ok(())
 }
 
 /// Carga solo los presets personalizados
@@ -50,8 +78,7 @@ fn load_custom_presets() -> Vec<Preset> {
 /// Guarda los presets personalizados
 fn save_custom_presets(presets: &[Preset]) -> Result<(), Box<dyn std::error::Error>> {
     let json = serde_json::to_string_pretty(presets)?;
-    let mut file = fs::File::create(CUSTOM_PRESETS_FILE)?;
-    file.write_all(json.as_bytes())?;
+    write_atomic(CUSTOM_PRESETS_FILE, json.as_bytes())?;
     Ok(())
 }
 
@@ -59,8 +86,10 @@ fn save_custom_presets(presets: &[Preset]) -> Result<(), Box<dyn std::error::Err
 pub fn add_preset(preset: Preset) -> Result<(), Box<dyn std::error::Error>> {
     let mut custom_presets = load_custom_presets();
 
-    // Verificar que no exista un preset con el mismo nombre
-    if custom_presets.iter().any(|p| p.name.eq_ignore_ascii_case(&preset.name)) {
+    if custom_presets
+        .iter()
+        .any(|p| p.name.eq_ignore_ascii_case(&preset.name))
+    {
         return Err("A preset with this name already exists".into());
     }
 
@@ -69,10 +98,10 @@ pub fn add_preset(preset: Preset) -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
-/// Elimina un preset personalizado por índice
+/// Elimina un preset personalizado por nombre
 pub fn delete_custom_preset(preset_name: &str) -> Result<(), Box<dyn std::error::Error>> {
     let mut custom_presets = load_custom_presets();
-    custom_presets.retain(|p| p.name != preset_name);
+    custom_presets.retain(|p| !p.name.eq_ignore_ascii_case(preset_name));
     save_custom_presets(&custom_presets)?;
     Ok(())
 }
@@ -80,11 +109,19 @@ pub fn delete_custom_preset(preset_name: &str) -> Result<(), Box<dyn std::error:
 /// Edita un preset personalizado existente
 pub fn edit_custom_preset(
     old_name: &str,
-    new_preset: Preset
+    new_preset: Preset,
 ) -> Result<(), Box<dyn std::error::Error>> {
     let mut custom_presets = load_custom_presets();
 
-    if let Some(preset) = custom_presets.iter_mut().find(|p| p.name == old_name) {
+    if custom_presets.iter().any(|p| {
+        p.name.eq_ignore_ascii_case(&new_preset.name) && !p.name.eq_ignore_ascii_case(old_name)
+    }) {
+        return Err("A preset with this name already exists".into());
+    }
+    if let Some(preset) = custom_presets
+        .iter_mut()
+        .find(|p| p.name.eq_ignore_ascii_case(old_name))
+    {
         *preset = new_preset;
         save_custom_presets(&custom_presets)?;
         Ok(())
@@ -93,21 +130,215 @@ pub fn edit_custom_preset(
     }
 }
 
-/// Verifica si los presets oficiales están desactualizados
-pub fn is_presets_outdated() -> bool {
-    let remote = reqwest::blocking::get(PRESETS_URL).and_then(|r| r.text());
-    let local = fs::read_to_string(PRESETS_FILE);
+/// Carga los metadatos de presets
+fn load_metadata() -> PresetsMetadata {
+    if let Ok(data) = fs::read_to_string(PRESETS_METADATA_FILE) {
+        if let Ok(metadata) = serde_json::from_str(&data) {
+            return metadata;
+        }
+    }
+    PresetsMetadata::default()
+}
 
-    match (remote, local) {
-        (Ok(remote), Ok(local)) => remote.trim() != local.trim(),
-        _ => false,
+/// Guarda los metadatos de presets
+fn save_metadata(metadata: &PresetsMetadata) -> Result<(), Box<dyn std::error::Error>> {
+    let json = serde_json::to_string_pretty(metadata)?;
+    write_atomic(PRESETS_METADATA_FILE, json.as_bytes())?;
+    Ok(())
+}
+
+/// Calcula el hash SHA-256 criptográfico de un string
+///
+/// Usa SHA-256 en lugar de DefaultHasher porque:
+/// - Es determinístico (mismo contenido = mismo hash siempre)
+/// - Es criptográficamente seguro (resistente a colisiones)
+/// - Es estándar de la industria para verificación de integridad
+///
+/// Retorna el hash como string hexadecimal en minúsculas (64 caracteres)
+fn calculate_hash(content: &str) -> String {
+    use sha2::{Digest, Sha256};
+
+    let mut hasher = Sha256::new();
+    hasher.update(content.as_bytes());
+    let result = hasher.finalize();
+
+    hex::encode(result)
+}
+
+/// Obtiene el timestamp actual
+fn current_timestamp() -> u64 {
+    SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .unwrap_or_default()
+        .as_secs()
+}
+
+/// Verifica si el cache ha expirado
+fn is_cache_expired(last_check: u64) -> bool {
+    let now = current_timestamp();
+    // Usar saturating_sub para evitar underflow si el reloj del sistema retrocede
+    now.saturating_sub(last_check) > CACHE_TTL_SECONDS
+}
+
+/// Estructura para el response de GitHub API
+#[derive(Deserialize)]
+struct GitHubRelease {
+    tag_name: String,
+    name: Option<String>,
+    assets: Vec<GitHubAsset>,
+}
+
+#[derive(Deserialize)]
+struct GitHubAsset {
+    name: String,
+    browser_download_url: String,
+    updated_at: Option<String>, // fallback marker
+}
+
+fn extract_remote_version(rel: &GitHubRelease) -> String {
+    if let Some(title) = &rel.name {
+        // naive parse: last 'v' followed by digits/dots (vX.Y.Z)
+        if let Some(i) = title.rfind('v') {
+            let cand = title[i + 1..].trim();
+            let parts: Vec<&str> = cand.split('.').collect();
+            if parts.len() == 3
+                && parts
+                    .iter()
+                    .all(|p| !p.is_empty() && p.chars().all(|c| c.is_ascii_digit()))
+            {
+                return cand.to_string();
+            }
+        }
+    }
+    if let Some(a) = rel.assets.iter().find(|a| a.name == "presets.json") {
+        if let Some(ts) = &a.updated_at {
+            return ts.clone();
+        }
+    }
+    rel.tag_name.clone()
+}
+
+/// Verifica si los presets están desactualizados (con cache)
+pub fn is_presets_outdated() -> bool {
+    let metadata = load_metadata();
+
+    // Si el cache no ha expirado, usar el valor cacheado
+    if !is_cache_expired(metadata.last_check) {
+        return false;
+    }
+
+    // Si el cache expiró, verificar remotamente
+    match check_remote_version() {
+        Ok(remote_version) => {
+            let is_outdated = remote_version != metadata.version;
+
+            // Solo actualizar timestamp si NO está desactualizado
+            if !is_outdated {
+                let new_metadata = PresetsMetadata {
+                    version: metadata.version.clone(),
+                    last_check: current_timestamp(),
+                    hash: metadata.hash.clone(),
+                };
+                let _ = save_metadata(&new_metadata);
+            }
+
+            is_outdated
+        }
+        Err(_) => {
+            // En caso de error, asumir que no está desactualizado
+            // para evitar mostrar alertas innecesarias
+            false
+        }
     }
 }
 
-/// Actualiza solo el archivo de presets oficiales (no toca los personalizados)
+/// Verifica la versión remota de presets
+fn check_remote_version() -> Result<String, Box<dyn std::error::Error>> {
+    let client = reqwest::blocking::Client::builder()
+        .timeout(std::time::Duration::from_secs(10))
+        .build()?;
+
+    let response = client
+        .get(GITHUB_API_URL)
+        .header("User-Agent", APP_UA)
+        .header("Accept", "application/vnd.github+json")
+        .send()?;
+
+    if response.status().as_u16() == 404 {
+        // No hay release/tag de presets: informar error para que el caller no alerte update
+        return Err("presets release not found".into());
+    }
+
+    let release: GitHubRelease = response.json()?;
+    Ok(extract_remote_version(&release))
+}
+
+/// Actualiza el archivo de presets desde GitHub Release
 pub fn update_presets_file() -> Result<(), Box<dyn std::error::Error>> {
-    let response = reqwest::blocking::get(PRESETS_URL)?.text()?;
-    let mut file = fs::File::create(PRESETS_FILE)?;
-    file.write_all(response.as_bytes())?;
+    let client = reqwest::blocking::Client::builder()
+        .timeout(std::time::Duration::from_secs(30))
+        .build()?;
+
+    let response = client
+        .get(GITHUB_API_URL)
+        .header("User-Agent", APP_UA)
+        .header("Accept", "application/vnd.github+json")
+        .send()?;
+
+    if response.status().as_u16() == 404 {
+        return Err("Presets release not found. Using local version.".into());
+    }
+
+    let release: GitHubRelease = response.json()?;
+
+    // Buscar el asset de presets.json
+    let preset_asset = release
+        .assets
+        .iter()
+        .find(|asset| asset.name == "presets.json")
+        .ok_or("presets.json not found in release")?;
+
+    // Descargar el archivo
+    let presets_content = client
+        .get(&preset_asset.browser_download_url)
+        .header("User-Agent", APP_UA)
+        .send()?
+        .text()?;
+
+    // Verificar que sea JSON válido
+    let _: Vec<Preset> = serde_json::from_str(&presets_content)?;
+
+    // Guardar el archivo
+    write_atomic(PRESETS_FILE, presets_content.as_bytes())?;
+
+    // Actualizar metadata
+    let metadata = PresetsMetadata {
+        version: extract_remote_version(&release),
+        last_check: current_timestamp(),
+        hash: calculate_hash(&presets_content),
+    };
+    save_metadata(&metadata)?;
+
     Ok(())
+}
+
+/// Fuerza una verificación remota ignorando el cache
+pub fn _force_check_updates() -> bool {
+    match check_remote_version() {
+        Ok(remote_version) => {
+            let metadata = load_metadata();
+            let is_outdated = remote_version != metadata.version;
+
+            // Actualizar el timestamp de última verificación
+            let new_metadata = PresetsMetadata {
+                version: metadata.version.clone(),
+                last_check: current_timestamp(),
+                hash: metadata.hash.clone(),
+            };
+            let _ = save_metadata(&new_metadata);
+
+            is_outdated
+        }
+        Err(_) => false,
+    }
 }

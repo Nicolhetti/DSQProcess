@@ -1,3 +1,133 @@
+## 📝 Changelog — Versión `v0.4.4` (2025-10-25)
+
+### ✨ Nuevas funciones
+
+* 🗑️ **Limpieza Automática de Ejecutables**
+  Los ejecutables de procesos falsos ahora se eliminan automáticamente cuando los procesos terminan.
+
+  * **Auto-eliminación** - Archivos `.exe` removidos automáticamente al finalizar proceso.
+  * **Ahorro de espacio** - No se necesita limpieza manual de la carpeta `Games/`.
+  * **Rastreo de rutas** - ProcessMonitor ahora rastrea las rutas de los ejecutables.
+  * **Operación silenciosa** - La limpieza ocurre en segundo plano sin intervención del usuario.
+
+* 🔄 **Sistema Mejorado de Actualización de Presets**
+  Renovación completa del mecanismo de actualización de presets para resolver problemas de límites de peticiones.
+
+  * **API de GitHub Releases** - Usa Releases en lugar de archivos raw (no más errores 429).
+  * **Caché inteligente** - Verifica actualizaciones cada 6 horas automáticamente.
+  * **Control de versiones** - Versionado semántico apropiado para presets.
+  * **Verificación de hash** - Asegura integridad de archivos con validación SHA-256.
+  * **Protección de timeout** - Timeout de 30 segundos previene congelamiento de la app.
+  * **Sistema de respaldo** - Usa versión local si falla la remota.
+  * **Workflow automático** - GitHub Actions auto-publica actualizaciones de presets.
+
+---
+
+### 🛠️ Mejoras
+
+* **Rendimiento**: Reducción de llamadas a la API de GitHub con caché inteligente
+  * TTL de caché de 6 horas balancea frescura y rendimiento
+  * Opción de verificación forzada disponible para verificación manual
+  * Metadata almacenada localmente en `presets_metadata.json`
+
+* **Confiabilidad**: Múltiples protecciones contra fallos de actualización
+  * Protección de timeout de red (10s para verificar versión, 30s para descarga)
+  * Validación de JSON antes de aplicar actualizaciones
+  * Respaldo elegante a presets locales en caso de error
+  * Header User-Agent para cumplir con mejores prácticas de API de GitHub
+
+* **Experiencia del Desarrollador**: Gestión más fácil de presets
+  * Workflow automatizado de GitHub Actions para publicación
+  * Documentación clara para contribuir presets
+  * Paso de validación en pipeline CI/CD
+  * Changelogs auto-generados para releases de presets
+
+---
+
+### 🌐 Traducciones
+
+* No se requieren nuevas claves de traducción para esta versión
+* Todos los mensajes usan claves existentes de versiones anteriores
+
+---
+
+### 🐞 Correcciones
+
+* **Límite de Peticiones**: Corregido error "429 Too Many Requests" al actualizar presets
+  * Reemplazado acceso a archivos raw con API de GitHub Releases
+  * Implementado caché para reducir llamadas a API
+  * Agregada lógica de reintento apropiada con backoff exponencial
+
+* **Espacio en Disco**: Corregida acumulación de ejecutables falsos en carpeta Games/
+  * Limpieza automática cuando los procesos terminan
+  * ProcessMonitor rastrea y elimina archivos huérfanos
+  * Implementación eficiente en memoria con Arc<Mutex>
+
+* **Verificación de Actualizaciones**: Mejorada confiabilidad de detección de versión de presets
+  * Mejor manejo de errores para fallos de red
+  * Validación de caché basada en timestamp
+  * Separadas verificaciones forzadas de automáticas
+
+---
+
+### 🔧 Cambios Técnicos
+
+* **Cambios Core**:
+  * Modificada estructura `ProcessInfo` para incluir `exe_path: PathBuf`
+  * Actualizada función `create_fake_process()` para retornar tupla `(u32, PathBuf)`
+  * Mejorada función `check_and_remove_dead_processes()` para eliminar ejecutables
+  * Agregado método `add_process()` con parámetro de ruta
+
+* **Sistema de Presets**:
+  * Nuevo archivo: `presets_metadata.json` para rastreo de versiones
+  * Agregada estructura `PresetsMetadata` con version/timestamp/hash
+  * Implementada función `force_check_updates()` para verificación manual
+  * Agregada función `is_cache_expired()` para validación de TTL
+  * Creada función `calculate_hash()` para verificaciones de integridad
+  * Actualizada función `update_presets_file()` para usar API de Releases
+
+* **Integración con GitHub**:
+  * Nuevo workflow: `.github/workflows/update-presets.yml`
+  * Validación automatizada de presets con `jq`
+  * Versionado auto-incremental basado en commits
+  * Creación/actualización de releases con gestión apropiada de assets
+
+* **Constantes**:
+  * `CACHE_TTL_SECONDS`: 21600 (6 horas)
+  * `GITHUB_API_URL`: Apunta a `/releases/tags/presets`
+  * Valores de timeout: 10s (verificación), 30s (descarga)
+
+---
+
+### 📚 Documentación
+
+* Agregado `PRESETS_RELEASE_GUIDE.md` - Guía para publicar actualizaciones de presets
+* Agregado `PRESETS_UPDATE_SYSTEM.md` - Documentación técnica del nuevo sistema
+* Actualizados workflows con generación automática de changelog
+* Incluida sección de troubleshooting para problemas comunes
+
+---
+
+### 🔄 Notas de Migración
+
+**Para Usuarios:**
+- No se requiere acción - actualiza automáticamente en la próxima verificación
+- El antiguo `presets.json` permanece compatible
+- Nuevo `presets_metadata.json` creado automáticamente
+
+**Para Contribuidores:**
+- Usar nuevo workflow para envío de presets
+- Seguir guías de versionado semántico
+- Probar validez de JSON antes de enviar PRs
+
+---
+
+### ⚠️ Cambios que Rompen Compatibilidad
+
+Ninguno - totalmente compatible con v0.4.3
+
+---
+
 ## 📝 Changelog — Versión `v0.4.3` (2025-10-21)
 
 ### ✨ Nuevas funciones

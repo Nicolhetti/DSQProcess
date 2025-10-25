@@ -1,6 +1,6 @@
 [package]
 name = "dsqprocess"
-version = "0.4.3"
+version = "0.4.4"
 edition = "2021"
 
 [dependencies]
@@ -12,6 +12,10 @@ serde_json = "1.0.145"
 discord-rich-presence = "1.0.0"
 serde = { version = "1.0.225", features = ["derive"] }
 reqwest = { version = "0.12.23", features = ["blocking", "json"] }
+sha2 = "0.10"
+hex = "0.4"
+log = "0.4"
+env_logger = "0.11"
 
 [build-dependencies]
 winres = "0.1.12"

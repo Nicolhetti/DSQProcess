@@ -271,10 +271,10 @@ fn handle_start_process(app: &mut DsqApp) {
             };
 
         app.status = match result {
-            Ok(pid) => {
-                // Registrar el proceso en el monitor
+            Ok((pid, exe_path)) => {
+                // Registrar el proceso en el monitor con la ruta del ejecutable
                 app.process_monitor
-                    .add_process(pid, app.process_name.clone());
+                    .add_process(pid, app.process_name.clone(), exe_path);
 
                 if app.rich_presence_enabled {
                     if let Some(ref mut rp) = app.rich_presence {
