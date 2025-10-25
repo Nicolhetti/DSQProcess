@@ -1,7 +1,6 @@
 use crate::shared::types::Preset;
 use serde::{Deserialize, Serialize};
 use std::fs;
-use std::io::Write;
 use std::time::{SystemTime, UNIX_EPOCH};
 
 // Usar GitHub Releases API
@@ -79,8 +78,7 @@ fn load_custom_presets() -> Vec<Preset> {
 /// Guarda los presets personalizados
 fn save_custom_presets(presets: &[Preset]) -> Result<(), Box<dyn std::error::Error>> {
     let json = serde_json::to_string_pretty(presets)?;
-    let mut file = fs::File::create(CUSTOM_PRESETS_FILE)?;
-    file.write_all(json.as_bytes())?;
+    write_atomic(CUSTOM_PRESETS_FILE, json.as_bytes())?;
     Ok(())
 }
 
@@ -202,7 +200,11 @@ fn extract_remote_version(rel: &GitHubRelease) -> String {
         // naive parse: last 'v' followed by digits/dots (vX.Y.Z)
         if let Some(i) = title.rfind('v') {
             let cand = title[i + 1..].trim();
-            if cand.chars().all(|c| c.is_ascii_digit() || c == '.') && cand.split('.').count() == 3
+            let parts: Vec<&str> = cand.split('.').collect();
+            if parts.len() == 3
+                && parts
+                    .iter()
+                    .all(|p| !p.is_empty() && p.chars().all(|c| c.is_ascii_digit()))
             {
                 return cand.to_string();
             }
@@ -230,13 +232,15 @@ pub fn is_presets_outdated() -> bool {
         Ok(remote_version) => {
             let is_outdated = remote_version != metadata.version;
 
-            // Actualizar metadata con el timestamp actual
-            let new_metadata = PresetsMetadata {
-                version: metadata.version.clone(),
-                last_check: current_timestamp(),
-                hash: metadata.hash.clone(),
-            };
-            let _ = save_metadata(&new_metadata);
+            // Solo actualizar timestamp si NO está desactualizado
+            if !is_outdated {
+                let new_metadata = PresetsMetadata {
+                    version: metadata.version.clone(),
+                    last_check: current_timestamp(),
+                    hash: metadata.hash.clone(),
+                };
+                let _ = save_metadata(&new_metadata);
+            }
 
             is_outdated
         }
