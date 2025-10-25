@@ -1,222 +1,222 @@
 [
-    {
-        "name": "2XKO",
-        "executable": "Lion-Win64-Shipping.exe",
-        "path": "2XKO/Live/Lion/Binaries/Win64"
-    },
-    {
-        "name": "Apex Legends",
-        "executable": "r5apex.exe",
-        "path": "Apex Legends"
-    },
-    {
-        "name": "Arena Breakout: Infinite",
-        "executable": "UAGame.exe",
-        "path": "Arena Breakout Infinite/Win64"
-    },
-    {
-        "name": "Battlefield™ 6",
-        "executable": "bf6.exe",
-        "path": "Battlefield 6"
-    },
-    {
-        "name": "Bloons TD 6",
-        "executable": "BloonsTD6.exe",
-        "path": "Bloons TD 6"
-    },
-    {
-        "name": "Blue Protocol: Star Resonance",
-        "executable": "BPSR_STEAM.exe",
-        "path": "Blue Protocol Star Resonance/bpsr"
-    },
-    {
-        "name": "Borderlands 4",
-        "executable": "Borderlands4.exe",
-        "path": "Borderlands 4/OakGame/Binaries/Win64"
-    },
-    {
-        "name": "Cyberpunk 2077",
-        "executable": "Cyberpunk2077.exe",
-        "path": "Cyberpunk 2077"
-    },
-    {
-        "name": "Dead by Daylight",
-        "executable": "DeadByDaylight-Win64-Shipping.exe",
-        "path": "Dead by Daylight/Win64"
-    },
-    {
-        "name": "Delta Force",
-        "executable": "DeltaForceClient-Win64-Shipping.exe",
-        "path": "Delta Force/Win64"
-    },
-    {
-        "name": "Destiny 2",
-        "executable": "destiny2.exe",
-        "path": "Destiny 2"
-    },
-	{
-        "name": "EA SPORTS FC™ 26",
-        "executable": "FC26.exe",
-        "path": "EA SPORTS FC 26"
-    },
-    {
-        "name": "Fortnite",
-        "executable": "FortniteClient-Win64-Shipping.exe",
-        "path": "Fortnite/Win64"
-    },
-    {
-        "name": "Genshin Impact",
-        "executable": "GenshinImpact.exe",
-        "path": "Genshin Impact"
-    },
-    {
-        "name": "inZOI",
-        "executable": "inZOI-Win64-Shipping.exe",
-        "path": "inZOI/Win64"
-    },
-    {
-        "name": "King of Meat",
-        "executable": "kingofmeat-release.exe",
-        "path": "King of Meat/bin"
-    },
-    {
-        "name": "Marvel Rivals",
-        "executable": "Marvel-Win64-Shipping.exe",
-        "path": "Marvel Rivals/Win64"
-    },
-    {
-        "name": "Once Human",
-        "executable": "ONCE_HUMAN.exe",
-        "path": "Once Human"
-    },
-    {
-        "name": "Ori and the Blind Forest",
-        "executable": "Ori.exe",
-        "path": "Ori and the Blind Forest"
-    },
-    {
-        "name": "Overwatch 2",
-        "executable": "Overwatch.exe",
-        "path": "Overwatch"
-    },
-    {
-        "name": "Palia",
-        "executable": "PaliaClientSteam-Win64-Shipping.exe",
-        "path": "Palia/Win64"
-    },
-    {
-        "name": "Path of Exile 2",
-        "executable": "PathOfExile_x64Steam.exe",
-        "path": "Path of Exile 2"
-    },
-    {
-        "name": "PEAK",
-        "executable": "PEAK.exe",
-        "path": "PEAK"
-    },
-    {
-        "name": "Perplexity",
-        "executable": "comet.exe",
-        "path": "Perplexity/Comet/Application"
-    },
-    {
-		"name": "Plants vs. Zombies™: Replanted",
-		"executable": "Replanted.exe",
-		"path": "PVZ Replanted"
-    },
-    {
-        "name": "R.E.P.O.",
-        "executable": "REPO.exe",
-        "path": "REPO"
-    },
-    {
-        "name": "Rainbow Six Siege",
-        "executable": "RainbowSix.exe",
-        "path": "Tom Clancy's Rainbow Six Siege"
-    },
-    {
-        "name": "Rust",
-        "executable": "RustClient.exe",
-        "path": "Rust"
-    },
-    {
-        "name": "skate.",
-        "executable": "Skate.exe",
-        "path": "skate"
-    },
-    {
-        "name": "Slay the Spire",
-        "executable": "SlayTheSpire.exe",
-        "path": "Slay the Spire"
-    },
-	{
-        "name": "Snowbreak: Containment Zone",
-        "executable": "Game.exe",
-        "path": "SNOWBREAK/Game/Binaries/Win64"
-    },
-    {
-        "name": "Sonic Racing: CrossWorlds",
-        "executable": "SonicRacingCrossWorldsSteam.exe",
-        "path": "Sonic Racing CrossWorlds/Win64"
-    },
-	{
-    	"name": "Space Marine 2 Free Demo",
-    	"executable": "Warhammer 40000 Space Marine 2 - Retail.exe",
-    	"path": "Warhammer 40000 Space Marine 2/client_pc/root/bin/pc"
-	},
-    {
-        "name": "Starlight Re:Volver Demo",
-        "executable": "HalcyonDive.exe",
-        "path": "Starlight ReVolver Demo"
-    },
-    {
-        "name": "SUPERVIVE",
-        "executable": "SUPERVIVE-Win64-Shipping.exe",
-        "path": "SUPERVIVE/Win64"
-    },
-    {
-        "name": "Terminull Brigade™",
-        "executable": "Rouge-Win64-Shipping.exe",
-        "path": "Terminull Brigade/Win64"
-    },
-    {
-        "name": "THE FINALS",
-        "executable": "Discovery.exe",
-        "path": "THE FINALS/Win64"
-    },
-    {
-        "name": "The First Descendant",
-        "executable": "M1-Win64-Shipping.exe",
-        "path": "The First Descendant/Win64"
-    },
-    {
-        "name": "The Midnight Walkers Demo",
-        "executable": "ProjectMW-Win64-Shipping.exe",
-        "path": "The Midnight Walkers Demo/ProjectMW/Binaries/Win64"
-    },
-    {
-        "name": "Towerborne",
-        "executable": "BelfryClient-Win64-Shipping.exe",
-        "path": "Towerborne/Win64"
-    },
-    {
-        "name": "THRONE AND LIBERTY",
-        "executable": "TL.exe",
-        "path": "THRONE AND LIBERTY/Win64"
-    },
-    {
-        "name": "Valorant",
-        "executable": "VALORANT-Win64-Shipping.exe",
-        "path": "VALORANT/Win64"
-    },
-    {
-        "name": "War Thunder",
-        "executable": "aces.exe",
-        "path": "War Thunder/Win64"
-    },
-	{
-		"name": "Warframe",
-		"executable": "Warframe.x64.exe",
-		"path": "Warframe"
-	}
+  {
+    "name": "2XKO",
+    "executable": "Lion-Win64-Shipping.exe",
+    "path": "2XKO/Live/Lion/Binaries/Win64"
+  },
+  {
+    "name": "Apex Legends",
+    "executable": "r5apex.exe",
+    "path": "Apex Legends"
+  },
+  {
+    "name": "Arena Breakout: Infinite",
+    "executable": "UAGame.exe",
+    "path": "Arena Breakout Infinite/Win64"
+  },
+  {
+    "name": "Battlefield™ 6",
+    "executable": "bf6.exe",
+    "path": "Battlefield 6"
+  },
+  {
+    "name": "Bloons TD 6",
+    "executable": "BloonsTD6.exe",
+    "path": "Bloons TD 6"
+  },
+  {
+    "name": "Blue Protocol: Star Resonance",
+    "executable": "BPSR_STEAM.exe",
+    "path": "Blue Protocol Star Resonance/bpsr"
+  },
+  {
+    "name": "Borderlands 4",
+    "executable": "Borderlands4.exe",
+    "path": "Borderlands 4/OakGame/Binaries/Win64"
+  },
+  {
+    "name": "Cyberpunk 2077",
+    "executable": "Cyberpunk2077.exe",
+    "path": "Cyberpunk 2077"
+  },
+  {
+    "name": "Dead by Daylight",
+    "executable": "DeadByDaylight-Win64-Shipping.exe",
+    "path": "Dead by Daylight/Win64"
+  },
+  {
+    "name": "Delta Force",
+    "executable": "DeltaForceClient-Win64-Shipping.exe",
+    "path": "Delta Force/Win64"
+  },
+  {
+    "name": "Destiny 2",
+    "executable": "destiny2.exe",
+    "path": "Destiny 2"
+  },
+  {
+    "name": "EA SPORTS FC™ 26",
+    "executable": "FC26.exe",
+    "path": "EA SPORTS FC 26"
+  },
+  {
+    "name": "Fortnite",
+    "executable": "FortniteClient-Win64-Shipping.exe",
+    "path": "Fortnite/Win64"
+  },
+  {
+    "name": "Genshin Impact",
+    "executable": "GenshinImpact.exe",
+    "path": "Genshin Impact"
+  },
+  {
+    "name": "inZOI",
+    "executable": "inZOI-Win64-Shipping.exe",
+    "path": "inZOI/Win64"
+  },
+  {
+    "name": "King of Meat",
+    "executable": "kingofmeat-release.exe",
+    "path": "King of Meat/bin"
+  },
+  {
+    "name": "Marvel Rivals",
+    "executable": "Marvel-Win64-Shipping.exe",
+    "path": "Marvel Rivals/Win64"
+  },
+  {
+    "name": "Once Human",
+    "executable": "ONCE_HUMAN.exe",
+    "path": "Once Human"
+  },
+  {
+    "name": "Ori and the Blind Forest",
+    "executable": "Ori.exe",
+    "path": "Ori and the Blind Forest"
+  },
+  {
+    "name": "Overwatch 2",
+    "executable": "Overwatch.exe",
+    "path": "Overwatch"
+  },
+  {
+    "name": "Palia",
+    "executable": "PaliaClientSteam-Win64-Shipping.exe",
+    "path": "Palia/Win64"
+  },
+  {
+    "name": "Path of Exile 2",
+    "executable": "PathOfExile_x64Steam.exe",
+    "path": "Path of Exile 2"
+  },
+  {
+    "name": "PEAK",
+    "executable": "PEAK.exe",
+    "path": "PEAK"
+  },
+  {
+    "name": "Perplexity",
+    "executable": "comet.exe",
+    "path": "Perplexity/Comet/Application"
+  },
+  {
+    "name": "Plants vs. Zombies™: Replanted",
+    "executable": "Replanted.exe",
+    "path": "PVZ Replanted"
+  },
+  {
+    "name": "R.E.P.O.",
+    "executable": "REPO.exe",
+    "path": "REPO"
+  },
+  {
+    "name": "Rainbow Six Siege",
+    "executable": "RainbowSix.exe",
+    "path": "Tom Clancy's Rainbow Six Siege"
+  },
+  {
+    "name": "Rust",
+    "executable": "RustClient.exe",
+    "path": "Rust"
+  },
+  {
+    "name": "skate.",
+    "executable": "Skate.exe",
+    "path": "skate"
+  },
+  {
+    "name": "Slay the Spire",
+    "executable": "SlayTheSpire.exe",
+    "path": "Slay the Spire"
+  },
+  {
+    "name": "Snowbreak: Containment Zone",
+    "executable": "Game.exe",
+    "path": "SNOWBREAK/Game/Binaries/Win64"
+  },
+  {
+    "name": "Sonic Racing: CrossWorlds",
+    "executable": "SonicRacingCrossWorldsSteam.exe",
+    "path": "Sonic Racing CrossWorlds/Win64"
+  },
+  {
+    "name": "Space Marine 2 Free Demo",
+    "executable": "Warhammer 40000 Space Marine 2 - Retail.exe",
+    "path": "Warhammer 40000 Space Marine 2/client_pc/root/bin/pc"
+  },
+  {
+    "name": "Starlight Re:Volver Demo",
+    "executable": "HalcyonDive.exe",
+    "path": "Starlight ReVolver Demo"
+  },
+  {
+    "name": "SUPERVIVE",
+    "executable": "SUPERVIVE-Win64-Shipping.exe",
+    "path": "SUPERVIVE/Win64"
+  },
+  {
+    "name": "Terminull Brigade™",
+    "executable": "Rouge-Win64-Shipping.exe",
+    "path": "Terminull Brigade/Win64"
+  },
+  {
+    "name": "THE FINALS",
+    "executable": "Discovery.exe",
+    "path": "THE FINALS/Win64"
+  },
+  {
+    "name": "The First Descendant",
+    "executable": "M1-Win64-Shipping.exe",
+    "path": "The First Descendant/Win64"
+  },
+  {
+    "name": "The Midnight Walkers Demo",
+    "executable": "ProjectMW-Win64-Shipping.exe",
+    "path": "The Midnight Walkers Demo/ProjectMW/Binaries/Win64"
+  },
+  {
+    "name": "Towerborne",
+    "executable": "BelfryClient-Win64-Shipping.exe",
+    "path": "Towerborne/Win64"
+  },
+  {
+    "name": "THRONE AND LIBERTY",
+    "executable": "TL.exe",
+    "path": "THRONE AND LIBERTY/Win64"
+  },
+  {
+    "name": "Valorant",
+    "executable": "VALORANT-Win64-Shipping.exe",
+    "path": "VALORANT/Win64"
+  },
+  {
+    "name": "War Thunder",
+    "executable": "aces.exe",
+    "path": "War Thunder/Win64"
+  },
+  {
+    "name": "Warframe",
+    "executable": "Warframe.x64.exe",
+    "path": "Warframe"
+  }
 ]
