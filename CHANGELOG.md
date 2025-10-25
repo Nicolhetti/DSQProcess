@@ -1,3 +1,133 @@
+## 📝 Changelog — Version `v0.4.4` (2025-10-25)
+
+### ✨ New Features
+
+* 🗑️ **Automatic Executable Cleanup**
+  Fake process executables are now automatically deleted when processes terminate.
+
+  * **Auto-deletion** - `.exe` files removed automatically when process ends.
+  * **Space saving** - No manual cleanup needed for `Games/` folder.
+  * **Path tracking** - ProcessMonitor now tracks executable paths.
+  * **Silent operation** - Cleanup happens in background without user intervention.
+
+* 🔄 **Improved Preset Update System**
+  Complete overhaul of preset update mechanism to solve rate limiting issues.
+
+  * **GitHub Releases API** - Uses Releases instead of raw files (no more 429 errors).
+  * **Smart caching** - Checks for updates every 6 hours automatically.
+  * **Version control** - Proper semantic versioning for presets.
+  * **Hash verification** - Ensures file integrity with SHA-256 validation.
+  * **Timeout protection** - 30-second timeout prevents app freezing.
+  * **Fallback system** - Uses local version if remote fails.
+  * **Automatic workflow** - GitHub Actions auto-publishes preset updates.
+
+---
+
+### 🛠️ Improvements
+
+* **Performance**: Reduced GitHub API calls with intelligent caching
+  * Cache TTL of 6 hours balances freshness and performance
+  * Force check option available for manual verification
+  * Metadata stored locally in `presets_metadata.json`
+
+* **Reliability**: Multiple safeguards against update failures
+  * Network timeout protection (10s for version check, 30s for download)
+  * JSON validation before applying updates
+  * Graceful fallback to local presets on error
+  * User-Agent header to comply with GitHub API best practices
+
+* **Developer Experience**: Easier preset management
+  * Automated GitHub Actions workflow for publishing
+  * Clear documentation for contributing presets
+  * Validation step in CI/CD pipeline
+  * Auto-generated changelogs for preset releases
+
+---
+
+### 🌐 Translations
+
+* No new translation keys required for this version
+* All messages use existing keys from previous versions
+
+---
+
+### 🐞 Fixes
+
+* **Rate Limiting**: Fixed "429 Too Many Requests" error when updating presets
+  * Replaced raw file access with GitHub Releases API
+  * Implemented caching to reduce API calls
+  * Added proper retry logic with exponential backoff
+
+* **Disk Space**: Fixed accumulation of fake executables in Games/ folder
+  * Automatic cleanup when processes terminate
+  * ProcessMonitor tracks and removes orphaned files
+  * Memory-efficient implementation with Arc<Mutex>
+
+* **Update Checks**: Improved reliability of preset version detection
+  * Better error handling for network failures
+  * Timestamp-based cache validation
+  * Separated forced checks from automatic checks
+
+---
+
+### 🔧 Technical Changes
+
+* **Core Changes**:
+  * Modified `ProcessInfo` struct to include `exe_path: PathBuf`
+  * Updated `create_fake_process()` to return `(u32, PathBuf)` tuple
+  * Enhanced `check_and_remove_dead_processes()` to delete executables
+  * Added `add_process()` method with path parameter
+
+* **Preset System**:
+  * New file: `presets_metadata.json` for version tracking
+  * Added `PresetsMetadata` struct with version/timestamp/hash
+  * Implemented `force_check_updates()` for manual verification
+  * Added `is_cache_expired()` for TTL validation
+  * Created `calculate_hash()` for integrity checks
+  * Updated `update_presets_file()` to use Releases API
+
+* **GitHub Integration**:
+  * New workflow: `.github/workflows/update-presets.yml`
+  * Automated preset validation with `jq`
+  * Auto-increment versioning based on commits
+  * Release creation/update with proper asset management
+
+* **Constants**:
+  * `CACHE_TTL_SECONDS`: 21600 (6 hours)
+  * `GITHUB_API_URL`: Points to `/releases/tags/presets`
+  * Timeout values: 10s (check), 30s (download)
+
+---
+
+### 📚 Documentation
+
+* Added `PRESETS_RELEASE_GUIDE_es.md` - Guide for publishing preset updates
+* Added `PRESETS_UPDATE_SYSTEM_es.md` - Technical documentation of new system
+* Updated workflows with automatic changelog generation
+* Included troubleshooting section for common issues
+
+---
+
+### 🔄 Migration Notes
+
+**For Users:**
+- No action required - updates automatically on next check
+- Old `presets.json` remains compatible
+- New `presets_metadata.json` created automatically
+
+**For Contributors:**
+- Use new workflow for preset submissions
+- Follow semantic versioning guidelines
+- Test JSON validity before submitting PRs
+
+---
+
+### ⚠️ Breaking Changes
+
+None - fully backward compatible with v0.4.3
+
+---
+
 ## 📝 Changelog — Version `v0.4.3` (2025-10-21)
 
 ### ✨ New Features
@@ -146,7 +276,7 @@
   ```
   src/app/ui/
   ├── main_tab.rs      - Main tab logic and components
-  ├── settings_tab.rs  - Settings tab logic and components  
+  ├── settings_tab.rs  - Settings tab logic and components
   ├── about_tab.rs     - About tab logic and components
   └── components.rs    - Reusable UI components
   ```

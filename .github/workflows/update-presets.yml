@@ -1,0 +1,112 @@
+name: Update Presets Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Presets version (e.g., 1.1.0)"
+        required: true
+        default: "1.0.0"
+  push:
+    paths:
+      - "presets.json"
+    branches:
+      - master
+
+jobs:
+  update-presets:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Validate presets.json
+        run: |
+          if ! jq empty presets.json; then
+            echo "❌ Invalid JSON in presets.json"
+            exit 1
+          fi
+          echo "✅ presets.json is valid"
+
+      - name: Get version from input or generate
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            VERSION="${{ github.event.inputs.version }}"
+          else
+            # Auto-increment version based on commit count
+            COUNT=$(git rev-list --count HEAD -- presets.json)
+            VERSION="1.0.$COUNT"
+          fi
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "📦 Version: $VERSION"
+
+      - name: Generate changelog
+        id: changelog
+        run: |
+          # Contar juegos en presets.json
+          GAME_COUNT=$(jq 'length' presets.json)
+
+          # Crear changelog
+          cat > release_notes.md << EOF
+          ## 🎮 Presets Update v${{ steps.version.outputs.version }}
+
+          ### 📊 Estadísticas
+          - **Total de juegos**: $GAME_COUNT presets oficiales
+          - **Última actualización**: $(date '+%Y-%m-%d %H:%M:%S UTC')
+
+          ### 📝 Cambios
+          Actualización automática de presets oficiales.
+
+          ### ⬇️ Instalación
+          DSQProcess descargará automáticamente estos presets en la próxima verificación (cada 6 horas) o al hacer click en "Check presets".
+
+          ### 🔧 Uso Manual
+          1. Descarga \`presets.json\`
+          2. Reemplaza el archivo en la carpeta de DSQProcess
+          3. Reinicia la aplicación
+          EOF
+
+          cat release_notes.md
+
+      - name: Delete existing 'presets' release
+        continue-on-error: true
+        run: |
+          # Obtener el ID del release 'presets' si existe
+          RELEASE_ID=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/${{ github.repository }}/releases/tags/presets" \
+            | jq -r '.id')
+
+          if [ "$RELEASE_ID" != "null" ]; then
+            echo "🗑️ Deleting existing presets release (ID: $RELEASE_ID)"
+            curl -X DELETE -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+              "https://api.github.com/repos/${{ github.repository }}/releases/$RELEASE_ID"
+          else
+            echo "ℹ️ No existing presets release found"
+          fi
+
+          # Eliminar el tag si existe
+          git push --delete origin presets 2>/dev/null || echo "ℹ️ Tag 'presets' doesn't exist"
+
+      - name: Create/Update 'presets' release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: presets
+          name: "Presets Update - v${{ steps.version.outputs.version }}"
+          body_path: release_notes.md
+          files: presets.json
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Summary
+        run: |
+          echo "## ✅ Presets Release Updated" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Version**: v${{ steps.version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Tag**: \`presets\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Games**: $(jq 'length' presets.json) presets" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "🎮 DSQProcess users will receive this update automatically!" >> $GITHUB_STEP_SUMMARY
