@@ -14,12 +14,37 @@ pub struct ProcessInfo {
 }
 
 impl ProcessMonitor {
+    /// Creates a new ProcessMonitor with an empty, thread-safe process list.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// let _pm = ProcessMonitor::new();
+    /// ```
     pub fn new() -> Self {
         Self {
             processes: Arc::new(Mutex::new(Vec::new())),
         }
     }
 
+    /// Adds a process record to the monitor's internal list.
+    ///
+    /// The record stores the process id, the executable name, and the executable path.
+    /// If the internal mutex is poisoned or cannot be acquired, the call is a no-op.
+    ///
+    /// # Parameters
+    ///
+    /// - `pid`: the platform process identifier to track.
+    /// - `exe_name`: the executable file name associated with the process.
+    /// - `exe_path`: the filesystem path to the executable file on disk.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use std::path::PathBuf;
+    /// let monitor = crate::core::process::ProcessMonitor::new();
+    /// monitor.add_process(12345, "example_game.exe".to_string(), PathBuf::from("Games/example_game.exe"));
+    /// ```
     pub fn add_process(&self, pid: u32, exe_name: String, exe_path: PathBuf) {
         if let Ok(mut procs) = self.processes.lock() {
             procs.push(ProcessInfo {
@@ -38,6 +63,24 @@ impl ProcessMonitor {
             .unwrap_or_default()
     }
 
+    /// Removes tracked processes that are no longer running and deletes their executables when present.
+    ///
+    /// This scans the current system processes, retains only those still alive in the monitor's internal list,
+    /// and attempts to remove the executable file for each process that is no longer running.
+    ///
+    /// # Returns
+    ///
+    /// `Vec<String>` with the executable names of the processes that were removed.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use std::path::PathBuf;
+    /// let monitor = crate::core::process::ProcessMonitor::new();
+    /// monitor.add_process(0, "dead_exe".to_string(), PathBuf::from("dead_exe"));
+    /// let removed = monitor.check_and_remove_dead_processes();
+    /// assert_eq!(removed, vec!["dead_exe".to_string()]);
+    /// ```
     pub fn check_and_remove_dead_processes(&self) -> Vec<String> {
         let mut system = System::new_all();
         system.refresh_all();
@@ -74,6 +117,25 @@ impl Default for ProcessMonitor {
     }
 }
 
+/// Creates a copy of the bundled child executable inside a Games/ subfolder, launches it with
+/// the specified runtime in minutes, and returns the spawned process id and the path to the
+/// copied executable.
+///
+/// The function ensures the target folder is rooted under `Games/` (adds that prefix if absent),
+/// creates any missing directories, copies the bundled `DSQChild` executable into the target
+/// folder with the provided `exe_name`, and spawns it with `duration_min` passed as a single
+/// argument. On success, returns the child process id and the `PathBuf` to the copied executable.
+/// Returns an `Err` if any filesystem or process spawning operation fails.
+///
+/// # Examples
+///
+/// ```
+/// # use std::fs;
+/// # use std::path::PathBuf;
+/// let (pid, path): (u32, PathBuf) = create_fake_process("MyTest", "test_child", 1).unwrap();
+/// assert!(pid > 0);
+/// assert!(fs::metadata(path).is_ok());
+/// ```
 pub fn create_fake_process(
     folder: &str,
     exe_name: &str,

@@ -253,6 +253,19 @@ fn render_process_configuration(ui: &mut egui::Ui, app: &mut DsqApp) {
     });
 }
 
+/// Attempts to start a simulated process using the application's configured process name and path and updates application state accordingly.
+///
+/// On success this registers the new process with the process monitor (including the executable path), optionally updates rich presence activity if enabled, sets the currently simulated game, and sets `app.status` to a success message that includes the process name and resolved path. On failure or when the process name is empty, `app.status` is set to an appropriate error message.
+///
+/// # Examples
+///
+/// ```no_run
+/// let mut app = DsqApp::default();
+/// app.process_name = "game.exe".into();
+/// app.custom_path = "Games/MyGame".into();
+/// handle_start_process(&mut app);
+/// // app.status will reflect success or an error message
+/// ```
 fn handle_start_process(app: &mut DsqApp) {
     if !app.process_name.trim().is_empty() {
         let result = create_fake_process(&app.custom_path, &app.process_name, 15);

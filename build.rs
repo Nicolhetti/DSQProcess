@@ -2,6 +2,23 @@ use std::env;
 use std::fs;
 use std::path::Path;
 
+/// Copies language files and preset JSON files into the release target directory and, on Windows, embeds application resources.
+///
+/// This build script reads `CARGO_MANIFEST_DIR` to locate the project directory, constructs `<manifest>/target/release`, and synchronizes the `lang` directory from the manifest into that release directory (removing any existing destination `lang` directory first). It then attempts to copy `presets.json` and `presets_custom.json` from the manifest to the release directory, ignoring copy errors. When compiled on Windows, it sets standard PE resource fields (icon, company, product, file description, original filename, and version) and compiles those resources.
+///
+/// Panics:
+/// - If creating the destination `lang` directory fails.
+/// - If reading or copying individual language files fails.
+/// - On Windows, if resource compilation fails.
+///
+/// # Examples
+///
+/// ```no_run
+/// // Set up a manifest directory (path must point to a real project layout for a real run)
+/// std::env::set_var("CARGO_MANIFEST_DIR", "/path/to/project");
+/// // Running this `main` will synchronize `lang` and copy preset files into `/path/to/project/target/release`.
+/// main();
+/// ```
 fn main() {
     let out_dir = env::var("CARGO_MANIFEST_DIR").unwrap();
     let target_dir = format!("{}/target/release", out_dir);
