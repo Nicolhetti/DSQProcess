@@ -5,18 +5,25 @@ mod core;
 mod platform;
 mod shared;
 
-use eframe::egui;
 use app::state::DsqApp;
+use core::presets::{is_presets_outdated, load_presets};
+use eframe::egui;
 use shared::config::load_config;
 use shared::lang::load_language;
 use shared::richpresence::RichPresenceManager;
-use core::presets::{ load_presets, is_presets_outdated };
 
 fn main() -> Result<(), eframe::Error> {
-    let _ = env_logger::try_init();
+    let _ = env_logger::Builder::from_env(env_logger::Env::default().default_filter_or(
+        if cfg!(debug_assertions) {
+            "debug"
+        } else {
+            "info"
+        },
+    ))
+    .try_init();
+
     let options = eframe::NativeOptions {
-        viewport: egui::ViewportBuilder
-            ::default()
+        viewport: egui::ViewportBuilder::default()
             .with_inner_size([505.0, 500.0])
             .with_resizable(false),
         ..Default::default()
@@ -56,6 +63,6 @@ fn main() -> Result<(), eframe::Error> {
             cc.egui_ctx.set_style(style);
 
             Box::new(app)
-        })
+        }),
     )
 }

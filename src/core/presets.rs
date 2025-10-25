@@ -11,6 +11,8 @@ const PRESETS_FILE: &str = "presets.json";
 const CUSTOM_PRESETS_FILE: &str = "presets_custom.json";
 const PRESETS_METADATA_FILE: &str = "presets_metadata.json";
 
+const APP_UA: &str = concat!("DSQProcess/", env!("CARGO_PKG_VERSION"));
+
 // Cache de 6 horas para evitar demasiadas peticiones
 const CACHE_TTL_SECONDS: u64 = 21600;
 
@@ -85,7 +87,7 @@ pub fn add_preset(preset: Preset) -> Result<(), Box<dyn std::error::Error>> {
 /// Elimina un preset personalizado por nombre
 pub fn delete_custom_preset(preset_name: &str) -> Result<(), Box<dyn std::error::Error>> {
     let mut custom_presets = load_custom_presets();
-    custom_presets.retain(|p| p.name != preset_name);
+    custom_presets.retain(|p| !p.name.eq_ignore_ascii_case(preset_name));
     save_custom_presets(&custom_presets)?;
     Ok(())
 }
@@ -130,7 +132,12 @@ fn save_metadata(metadata: &PresetsMetadata) -> Result<(), Box<dyn std::error::E
         let mut f = fs::File::create(&tmp)?;
         f.write_all(json.as_bytes())?;
     }
-    fs::rename(&tmp, PRESETS_METADATA_FILE)?;
+    if let Err(e) = fs::rename(&tmp, PRESETS_METADATA_FILE) {
+        if std::path::Path::new(PRESETS_METADATA_FILE).exists() {
+            let _ = fs::remove_file(PRESETS_METADATA_FILE);
+        }
+        fs::rename(&tmp, PRESETS_METADATA_FILE).map_err(|_| e)?;
+    }
     Ok(())
 }
 
@@ -156,7 +163,7 @@ fn calculate_hash(content: &str) -> String {
 fn current_timestamp() -> u64 {
     SystemTime::now()
         .duration_since(UNIX_EPOCH)
-        .unwrap()
+        .unwrap_or_default()
         .as_secs()
 }
 
@@ -245,7 +252,8 @@ fn check_remote_version() -> Result<String, Box<dyn std::error::Error>> {
 
     let response = client
         .get(GITHUB_API_URL)
-        .header("User-Agent", "DSQProcess")
+        .header("User-Agent", APP_UA)
+        .header("Accept", "application/vnd.github+json")
         .send()?;
 
     if response.status().as_u16() == 404 {
@@ -265,7 +273,8 @@ pub fn update_presets_file() -> Result<(), Box<dyn std::error::Error>> {
 
     let response = client
         .get(GITHUB_API_URL)
-        .header("User-Agent", "DSQProcess")
+        .header("User-Agent", APP_UA)
+        .header("Accept", "application/vnd.github+json")
         .send()?;
 
     if response.status().as_u16() == 404 {
@@ -292,8 +301,17 @@ pub fn update_presets_file() -> Result<(), Box<dyn std::error::Error>> {
     let _: Vec<Preset> = serde_json::from_str(&presets_content)?;
 
     // Guardar el archivo
-    let mut file = fs::File::create(PRESETS_FILE)?;
-    file.write_all(presets_content.as_bytes())?;
+    let tmp = format!("{}.tmp", PRESETS_FILE);
+    {
+        let mut f = fs::File::create(&tmp)?;
+        f.write_all(presets_content.as_bytes())?;
+    }
+    if let Err(e) = fs::rename(&tmp, PRESETS_FILE) {
+        if std::path::Path::new(PRESETS_FILE).exists() {
+            let _ = fs::remove_file(PRESETS_FILE);
+        }
+        fs::rename(&tmp, PRESETS_FILE).map_err(|_| e)?;
+    }
 
     // Actualizar metadata
     let metadata = PresetsMetadata {

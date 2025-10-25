@@ -8,9 +8,17 @@ pub fn check_for_updates(
         .timeout(std::time::Duration::from_secs(10))
         .user_agent(format!("DSQProcess/{}", VERSION))
         .build()?;
-    let response = client.get(url).send()?;
-    if !response.status().is_success() {
-        return Ok(None);
+    let response = client
+        .get(url)
+        .header("Accept", "application/vnd.github+json")
+        .send()?;
+    match response.status().as_u16() {
+        200..=299 => {}
+        404 => return Ok(None),
+        403 => {
+            return Ok(None);
+        }
+        _ => return Ok(None),
     }
 
     let json: serde_json::Value = response.json()?;
