@@ -3,6 +3,7 @@ use std::path::{ Path, PathBuf };
 use std::ffi::OsStr;
 use sysinfo::System;
 
+#[allow(clippy::upper_case_acronyms)]
 #[derive(Debug, Clone, PartialEq)]
 pub enum DiscordVersion {
     Stable,

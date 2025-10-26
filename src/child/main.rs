@@ -1,8 +1,8 @@
 #![windows_subsystem = "windows"]
 
 use eframe::App;
-use eframe::{ egui, Frame };
-use std::{ collections::HashMap, fs, env };
+use eframe::{egui, Frame};
+use std::{collections::HashMap, env, fs};
 
 type LangMap = HashMap<String, String>;
 
@@ -12,15 +12,18 @@ struct Config {
 }
 
 fn load_language_from_config() -> LangMap {
-    let config: Config = fs
-        ::read_to_string("config.json")
+    let config: Config = fs::read_to_string("config.json")
         .ok()
         .and_then(|data| serde_json::from_str(&data).ok())
         .unwrap_or(Config {
             language: "Español".to_string(),
         });
 
-    let lang_code = if config.language == "English" { "en" } else { "es" };
+    let lang_code = if config.language == "English" {
+        "en"
+    } else {
+        "es"
+    };
     let path = format!("lang/{}_child.json", lang_code);
     let data = fs::read_to_string(path).unwrap_or_default();
     serde_json::from_str(&data).unwrap_or_default()
@@ -42,7 +45,7 @@ impl Default for DsqChildApp {
         let process_name = exe_path
             .file_stem()
             .and_then(|s| s.to_str())
-            .unwrap_or_else(|| "simulated_process")
+            .unwrap_or("simulated_process")
             .to_string();
 
         Self {
@@ -80,8 +83,7 @@ impl DsqChildApp {
 
 impl App for DsqChildApp {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut Frame) {
-        egui::CentralPanel
-            ::default()
+        egui::CentralPanel::default()
             .frame(egui::Frame {
                 inner_margin: egui::Margin::symmetric(20.0, 20.0),
                 fill: ctx.style().visuals.window_fill(),
@@ -89,14 +91,14 @@ impl App for DsqChildApp {
             })
             .show(ctx, |ui| {
                 ui.vertical_centered(|ui| {
-                    ui.heading(&format!("🎮 {}", self.t("title")));
+                    ui.heading(format!("🎮 {}", self.t("title")));
                     ui.colored_label(
                         egui::Color32::from_rgb(108, 117, 125),
                         format!(
                             "{} {}",
                             self.t("simulating"),
                             self.process_name.replace(".exe", "")
-                        )
+                        ),
                     );
                 });
 
@@ -115,7 +117,7 @@ impl App for DsqChildApp {
                                 ui.label(self.t("time_elapsed"));
                                 ui.colored_label(
                                     egui::Color32::from_rgb(40, 167, 69),
-                                    self.format_duration(elapsed)
+                                    self.format_duration(elapsed),
                                 );
                             });
                         });
@@ -133,7 +135,7 @@ impl App for DsqChildApp {
                                         ui.label(self.t("automatic_closing"));
                                         ui.colored_label(
                                             egui::Color32::from_rgb(255, 193, 7),
-                                            self.format_duration(remaining)
+                                            self.format_duration(remaining),
                                         );
                                     });
                                 });
@@ -150,12 +152,12 @@ impl App for DsqChildApp {
                         if !self.is_scheduled_to_close {
                             let button_15 = ui.add_sized(
                                 [140.0, 35.0],
-                                egui::Button::new(&format!("⏱ {}", self.t("close_in_15")))
+                                egui::Button::new(format!("⏱ {}", self.t("close_in_15"))),
                             );
 
                             if button_15.clicked() {
                                 self.closing_time = Some(
-                                    std::time::Instant::now() + std::time::Duration::from_secs(900)
+                                    std::time::Instant::now() + std::time::Duration::from_secs(900),
                                 );
                                 self.status = self.t("scheduled_close");
                                 self.is_scheduled_to_close = true;
@@ -163,7 +165,7 @@ impl App for DsqChildApp {
                         } else {
                             let button_cancel = ui.add_sized(
                                 [140.0, 35.0],
-                                egui::Button::new(self.t("cancel_close"))
+                                egui::Button::new(self.t("cancel_close")),
                             );
 
                             if button_cancel.clicked() {
@@ -177,7 +179,7 @@ impl App for DsqChildApp {
 
                         let button_now = ui.add_sized(
                             [140.0, 35.0],
-                            egui::Button::new(&format!("⏹ {}", self.t("close_now")))
+                            egui::Button::new(format!("⏹ {}", self.t("close_now"))),
                         );
 
                         if button_now.clicked() {
@@ -193,21 +195,19 @@ impl App for DsqChildApp {
                         ui.set_min_width(326.0);
                         ui.horizontal(|ui| {
                             ui.vertical_centered(|ui| {
-                                if
-                                    self.status.contains("programado") ||
-                                    self.status.contains("scheduled")
+                                if self.status.contains("programado")
+                                    || self.status.contains("scheduled")
                                 {
                                     ui.colored_label(
                                         egui::Color32::from_rgb(40, 167, 69),
-                                        &self.status
+                                        &self.status,
                                     );
-                                } else if
-                                    self.status.contains("cancelado") ||
-                                    self.status.contains("cancelled")
+                                } else if self.status.contains("cancelado")
+                                    || self.status.contains("cancelled")
                                 {
                                     ui.colored_label(
                                         egui::Color32::from_rgb(255, 193, 7),
-                                        &self.status
+                                        &self.status,
                                     );
                                 } else {
                                     ui.label("ℹ");
@@ -229,15 +229,15 @@ impl App for DsqChildApp {
                                 ui.label(self.t("tips"));
                                 ui.colored_label(
                                     egui::Color32::from_rgb(108, 117, 125),
-                                    self.t("tip_1")
+                                    self.t("tip_1"),
                                 );
                                 ui.colored_label(
                                     egui::Color32::from_rgb(108, 117, 125),
-                                    self.t("tip_2")
+                                    self.t("tip_2"),
                                 );
                                 ui.colored_label(
                                     egui::Color32::from_rgb(108, 117, 125),
-                                    self.t("tip_3")
+                                    self.t("tip_3"),
                                 );
                             });
                         });
@@ -251,8 +251,7 @@ impl App for DsqChildApp {
 
 fn main() -> Result<(), eframe::Error> {
     let options = eframe::NativeOptions {
-        viewport: egui::ViewportBuilder
-            ::default()
+        viewport: egui::ViewportBuilder::default()
             .with_inner_size([380.0, 420.0])
             .with_resizable(false)
             .with_decorations(true),
@@ -260,11 +259,14 @@ fn main() -> Result<(), eframe::Error> {
     };
 
     let lang = load_language_from_config();
-    let title = lang.get("title_child").cloned().unwrap_or("Child".to_string());
+    let title = lang
+        .get("title_child")
+        .cloned()
+        .unwrap_or("Child".to_string());
 
     eframe::run_native(
         &title,
         options,
-        Box::new(|_cc| Box::new(DsqChildApp::default()))
+        Box::new(|_cc| Box::new(DsqChildApp::default())),
     )
 }

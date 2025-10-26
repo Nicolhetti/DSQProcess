@@ -1,9 +1,9 @@
-use eframe::egui;
 use crate::app::state::DsqApp;
 use crate::app::translate::translate;
 use crate::shared::config::save_config;
 use crate::shared::richpresence::RichPresenceManager;
 use crate::shared::types::Config;
+use eframe::egui;
 
 pub fn render(ui: &mut egui::Ui, app: &mut DsqApp) {
     ui.vertical_centered(|ui| {
@@ -30,8 +30,7 @@ fn render_language_settings(ui: &mut egui::Ui, app: &mut DsqApp) {
             ui.vertical_centered(|ui| {
                 ui.horizontal(|ui| {
                     ui.add_space(150.0);
-                    egui::ComboBox
-                        ::from_id_source("language_select")
+                    egui::ComboBox::from_id_source("language_select")
                         .selected_text(&app.selected_lang)
                         .width(150.0)
                         .show_ui(ui, |ui| {
@@ -55,7 +54,10 @@ fn render_rich_presence_settings(ui: &mut egui::Ui, app: &mut DsqApp) {
             let mut rich_presence_changed = false;
             let enable_rich_presence_text = translate(app, "enable_rich_presence");
 
-            if ui.checkbox(&mut app.rich_presence_enabled, &enable_rich_presence_text).changed() {
+            if ui
+                .checkbox(&mut app.rich_presence_enabled, &enable_rich_presence_text)
+                .changed()
+            {
                 rich_presence_changed = true;
             }
 
@@ -71,26 +73,18 @@ fn handle_rich_presence_toggle(app: &mut DsqApp) {
         if app.rich_presence.is_none() {
             let mut rp = RichPresenceManager::new();
             if let Ok(()) = rp.connect() {
-                let activity = if let Some(ref game) = app.current_simulated_game {
-                    Some(game.clone())
-                } else {
-                    None
-                };
+                let activity = app.current_simulated_game.clone();
                 let _ = rp.set_activity(activity);
                 app.rich_presence = Some(rp);
             } else {
-                app.status = translate(app, "rich_presence_error").replace(
-                    "{error}",
-                    "No se pudo conectar"
-                );
+                app.status =
+                    translate(app, "rich_presence_error").replace("{error}", "No se pudo conectar");
                 app.rich_presence_enabled = false;
             }
         }
-    } else {
-        if let Some(mut rp) = app.rich_presence.take() {
-            let _ = rp.clear_activity();
-            rp.disconnect();
-        }
+    } else if let Some(mut rp) = app.rich_presence.take() {
+        let _ = rp.clear_activity();
+        rp.disconnect();
     }
 }
 
