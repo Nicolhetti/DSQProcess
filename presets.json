@@ -218,15 +218,5 @@
     "name": "Warframe",
     "executable": "Warframe.x64.exe",
     "path": "Warframe"
-  },
-  {
-    "name": "World of Tanks",
-    "executable": "WorldOfTanks.exe",
-    "path": "World of Tanks/na/win64"
-  },
-  {
-    "name": "World of Tanks Blitz",
-    "executable": "wotblitz.exe",
-    "path": "World of Tanks Blitz"
   }
 ]
