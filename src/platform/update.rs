@@ -3,7 +3,7 @@ pub const VERSION: &str = env!("CARGO_PKG_VERSION");
 pub fn check_for_updates(
     current_version: &str,
 ) -> Result<Option<String>, Box<dyn std::error::Error>> {
-    let url = "https://api.github.com/repos/Nicolhetti/DSQProcess/releases/latest";
+    let url = "https://api.github.com/repos/Nicolhetti/DSQProcess/releases";
     let client = reqwest::blocking::Client::builder()
         .timeout(std::time::Duration::from_secs(10))
         .user_agent(format!("DSQProcess/{}", VERSION))
@@ -15,7 +15,6 @@ pub fn check_for_updates(
         .send()?;
 
     let status = response.status().as_u16();
-
     match status {
         200..=299 => {}
         404 => {
@@ -32,90 +31,66 @@ pub fn check_for_updates(
         }
     }
 
-    let json: serde_json::Value = response.json()?;
+    let releases: Vec<serde_json::Value> = response.json()?;
 
-    // Obtener el tag_name del release
-    let tag_name = json["tag_name"].as_str().unwrap_or("").trim();
+    // Filtrar los releases válidos (tag que empiece con 'v' y tenga formato semver)
+    let mut valid_releases: Vec<_> = releases
+        .into_iter()
+        .filter_map(|r| {
+            let tag = r["tag_name"].as_str()?.trim();
+            if !tag.starts_with('v') {
+                return None;
+            }
 
-    // IMPORTANTE: Filtrar releases que no sean versiones de la app
-    // Los releases de presets usan el tag "presets", ignorarlos
-    if tag_name.is_empty() || tag_name.eq_ignore_ascii_case("presets") {
-        log::info!("Skipping non-version release: {}", tag_name);
+            let version_str = tag.trim_start_matches('v');
+            if semver::Version::parse(version_str).is_ok() {
+                Some((r.clone(), version_str.to_string()))
+            } else {
+                None
+            }
+        })
+        .collect();
+
+    if valid_releases.is_empty() {
+        log::warn!("No valid versioned releases found");
         return Ok(None);
     }
 
-    // Extraer la versión (eliminar 'v' si existe)
-    let latest_version = tag_name.trim_start_matches('v');
+    // Ordenar por versión descendente
+    valid_releases.sort_by(|a, b| {
+        let va = semver::Version::parse(&a.1).unwrap();
+        let vb = semver::Version::parse(&b.1).unwrap();
+        vb.cmp(&va)
+    });
 
-    // Validar que sea una versión válida antes de parsear
-    if !is_valid_semver(latest_version) {
-        log::warn!("Invalid version format in release: {}", tag_name);
-        return Ok(None);
-    }
-
-    // Parsear versiones
+    let latest_release = &valid_releases[0];
+    let latest_version = &latest_release.1;
     let current = semver::Version::parse(current_version)?;
-    let latest = match semver::Version::parse(latest_version) {
-        Ok(v) => v,
-        Err(e) => {
-            log::error!("Failed to parse version '{}': {}", latest_version, e);
-            return Ok(None);
-        }
-    };
+    let latest = semver::Version::parse(latest_version)?;
 
-    // Comparar versiones
     if latest > current {
         log::info!(
             "Update available: {} -> {}",
             current_version,
             latest_version
         );
+        let release_json = &latest_release.0;
 
-        // Obtener la URL del asset (el .zip)
-        let asset_url = json
-            .get("assets")
-            .and_then(|a| a.as_array())
-            .and_then(|assets| {
-                // Buscar el asset que contenga "DSQProcess" y termine en ".zip"
-                assets.iter().find(|asset| {
-                    if let Some(name) = asset.get("name").and_then(|n| n.as_str()) {
-                        name.contains("DSQProcess") && name.ends_with(".zip")
-                    } else {
-                        false
-                    }
-                })
-            })
-            .and_then(|a| a.get("browser_download_url"))
-            .and_then(|v| v.as_str())
-            .map(|s| s.to_string());
+        // Obtener URL del asset
+        let asset_url = release_json["assets"].as_array().and_then(|assets| {
+            assets
+                .iter()
+                .find_map(|a| a["browser_download_url"].as_str().map(|s| s.to_string()))
+        });
 
         if let Some(url) = asset_url {
             return Ok(Some(url));
         } else {
-            // Fallback: usar la página del release si no hay asset
-            let release_url = json
-                .get("html_url")
-                .and_then(|v| v.as_str())
-                .map(|s| s.to_string());
-            return Ok(release_url);
+            let html_url = release_json["html_url"].as_str().map(|s| s.to_string());
+            return Ok(html_url);
         }
     }
 
     log::info!("Already on latest version: {}", current_version);
     Ok(None)
-}
-
-/// Valida que un string sea una versión semántica válida (X.Y.Z)
-fn is_valid_semver(version: &str) -> bool {
-    let parts: Vec<&str> = version.split('.').collect();
-
-    // Debe tener exactamente 3 partes
-    if parts.len() != 3 {
-        return false;
-    }
-
-    // Cada parte debe ser un número
-    parts
-        .iter()
-        .all(|part| !part.is_empty() && part.chars().all(|c| c.is_ascii_digit()))
 }
