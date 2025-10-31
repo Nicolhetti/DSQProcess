@@ -10,6 +10,11 @@
     "path": "Apex Legends"
   },
   {
+    "name": "ARC Raiders",
+    "executable": "PioneerGame.exe",
+    "path": "ARC Raiders/PioneerGame/Binaries/Win64"
+  },
+  {
     "name": "Arena Breakout: Infinite",
     "executable": "UAGame.exe",
     "path": "Arena Breakout Infinite/Win64"
@@ -103,6 +108,11 @@
     "name": "Palia",
     "executable": "PaliaClientSteam-Win64-Shipping.exe",
     "path": "Palia/Win64"
+  },
+  {
+    "name": "Palworld",
+    "executable": "Palworld-Win64-Shipping.exe",
+    "path": "Palworld/Pal/Binaries/Win64"
   },
   {
     "name": "Path of Exile 2",
