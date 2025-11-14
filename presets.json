@@ -75,6 +75,11 @@
     "path": "Genshin Impact"
   },
   {
+    "name": "Honkai: Star Rail",
+    "executable": "StarRail.exe",
+    "path": "Honkai Star Rail/games/Star Rail Games"
+  },
+  {
     "name": "inZOI",
     "executable": "inZOI-Win64-Shipping.exe",
     "path": "inZOI/Win64"
@@ -83,6 +88,11 @@
     "name": "King of Meat",
     "executable": "kingofmeat-release.exe",
     "path": "King of Meat/bin"
+  },
+  {
+    "name": "League of Legends",
+    "executable": "League of Legends.exe",
+    "path": "League of Legends"
   },
   {
     "name": "Marvel Rivals",
@@ -228,5 +238,10 @@
     "name": "Warframe",
     "executable": "Warframe.x64.exe",
     "path": "Warframe"
+  },
+  {
+    "name": "Where Winds Meet",
+    "executable": "wwm.exe",
+    "path": "Where Winds Meet/Win64r"
   }
 ]
