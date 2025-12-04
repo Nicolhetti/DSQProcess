@@ -195,6 +195,11 @@
     "path": "Starlight ReVolver Demo"
   },
   {
+    "name": "Storm Lancers Demo",
+    "executable": "StormLancersDemo.exe",
+    "path": "Storm Lancers Demo"
+  },
+  {
     "name": "SUPERVIVE",
     "executable": "SUPERVIVE-Win64-Shipping.exe",
     "path": "SUPERVIVE/Win64"
