@@ -4,9 +4,9 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: "Presets version (e.g., 1.1.0)"
-        required: true
-        default: "1.0.0"
+        description: "Cheese 🧀"
+        required: false
+        default: ""
   push:
     paths:
       - "presets.json"
@@ -20,93 +20,191 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 
 
       - name: Validate presets.json
+        id: validate
         run: |
-          if ! jq empty presets.json; then
+          echo "🔍 Validating presets.json..."
+          
+          if ! jq empty presets.json 2>/dev/null; then
             echo "❌ Invalid JSON in presets.json"
             exit 1
           fi
-          echo "✅ presets.json is valid"
+          
+          GAME_COUNT=$(jq 'length' presets.json)
+          echo "game_count=$GAME_COUNT" >> $GITHUB_OUTPUT
+          echo "✅ presets.json is valid ($GAME_COUNT games)"
+          
+          if [ "$GAME_COUNT" -eq 0 ]; then
+            echo "❌ presets.json is empty"
+            exit 1
+          fi
+          
+          HASH=$(sha256sum presets.json | awk '{print $1}' | cut -c1-12)
+          echo "hash=$HASH" >> $GITHUB_OUTPUT
+          echo "📋 Hash: $HASH"
 
-      - name: Get version from input or generate
+      - name: Generate version
         id: version
         run: |
-          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+          if [ -n "${{ github.event.inputs.version }}" ]; then
             VERSION="${{ github.event.inputs.version }}"
+            echo "📌 Using manual version: $VERSION"
           else
-            # Auto-increment version based on commit count
-            COUNT=$(git rev-list --count HEAD -- presets.json)
-            VERSION="1.0.$COUNT"
+            GAME_COUNT="${{ steps.validate.outputs.game_count }}"
+            VERSION="$GAME_COUNT"
+            echo "🎮 Using preset count as version: $VERSION"
           fi
+          
           echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo "📦 Version: $VERSION"
+          echo "version_tag=v$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Detect changes
+        id: changes
+        run: |
+          echo "🔍 Detecting changes in presets..."
+          
+          git show HEAD~1:presets.json > presets_old.json 2>/dev/null || echo "[]" > presets_old.json
+          
+          ADDED=$(jq -r '.[].name' presets.json | sort > new_games.txt; \
+                  jq -r '.[].name' presets_old.json | sort > old_games.txt; \
+                  comm -13 old_games.txt new_games.txt | head -10)
+          
+          REMOVED=$(comm -23 old_games.txt new_games.txt | head -10)
+          
+          ADDED_COUNT=$(echo "$ADDED" | grep -c . || echo "0")
+          REMOVED_COUNT=$(echo "$REMOVED" | grep -c . || echo "0")
+          
+          echo "added_count=$ADDED_COUNT" >> $GITHUB_OUTPUT
+          echo "removed_count=$REMOVED_COUNT" >> $GITHUB_OUTPUT
+          
+          echo "$ADDED" > added_games.txt
+          echo "$REMOVED" > removed_games.txt
+          
+          echo "➕ Added: $ADDED_COUNT games"
+          echo "➖ Removed: $REMOVED_COUNT games"
 
       - name: Generate changelog
         id: changelog
         run: |
-          # Contar juegos en presets.json
-          GAME_COUNT=$(jq 'length' presets.json)
-
-          # Crear changelog
-          cat > release_notes.md << EOF
-          ## 🎮 Presets Update v${{ steps.version.outputs.version }}
+          GAME_COUNT="${{ steps.validate.outputs.game_count }}"
+          VERSION="${{ steps.version.outputs.version }}"
+          HASH="${{ steps.validate.outputs.hash }}"
+          ADDED_COUNT="${{ steps.changes.outputs.added_count }}"
+          REMOVED_COUNT="${{ steps.changes.outputs.removed_count }}"
+          
+          cat > release_notes.md << 'EOF'
+          ## 🎮 Presets Update v$VERSION
 
           ### 📊 Estadísticas
           - **Total de juegos**: $GAME_COUNT presets oficiales
           - **Última actualización**: $(date '+%Y-%m-%d %H:%M:%S UTC')
+          - **Hash**: `$HASH`
 
-          ### 📝 Cambios
-          Actualización automática de presets oficiales.
-
-          ### ⬇️ Instalación
-          DSQProcess descargará automáticamente estos presets en la próxima verificación (cada 6 horas) o al hacer click en "Check presets".
-
-          ### 🔧 Uso Manual
-          1. Descarga \`presets.json\`
-          2. Reemplaza el archivo en la carpeta de DSQProcess
-          3. Reinicia la aplicación
+          ### 📝 Cambios en esta actualización
           EOF
+          
+          sed -i "s/\$VERSION/$VERSION/g" release_notes.md
+          sed -i "s/\$GAME_COUNT/$GAME_COUNT/g" release_notes.md
+          sed -i "s/\$HASH/$HASH/g" release_notes.md
+          
+          if [ "$ADDED_COUNT" -gt 0 ]; then
+            echo "" >> release_notes.md
+            echo "#### ✨ Juegos agregados ($ADDED_COUNT)" >> release_notes.md
+            while IFS= read -r game; do
+              [ -n "$game" ] && echo "- $game" >> release_notes.md
+            done < added_games.txt
+          fi
+          
+          if [ "$REMOVED_COUNT" -gt 0 ]; then
+            echo "" >> release_notes.md
+            echo "#### 🗑️ Juegos removidos ($REMOVED_COUNT)" >> release_notes.md
+            while IFS= read -r game; do
+              [ -n "$game" ] && echo "- $game" >> release_notes.md
+            done < removed_games.txt
+          fi
+          
+          if [ "$ADDED_COUNT" -eq 0 ] && [ "$REMOVED_COUNT" -eq 0 ]; then
+            echo "" >> release_notes.md
+            echo "Sin cambios detectados en los juegos. Posible actualización de metadatos o correcciones." >> release_notes.md
+          fi
+          
+          cat >> release_notes.md << 'EOF'
 
+          ### ⬇️ Instalación Automática
+          DSQProcess descargará automáticamente estos presets en la próxima verificación (cada 6 horas) o al hacer click en **"Check presets"**.
+
+          ### 🔧 Instalación Manual
+          1. Descarga `presets.json` desde los assets abajo
+          2. Reemplaza el archivo en tu carpeta de DSQProcess
+          3. Reinicia la aplicación
+
+          ---
+          
+          **Nota**: Esta es la versión oficial de presets. Los presets personalizados no se ven afectados.
+          EOF
+          
+          echo "📄 Changelog generado:"
           cat release_notes.md
 
       - name: Delete existing 'presets' release
         continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Obtener el ID del release 'presets' si existe
-          RELEASE_ID=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            "https://api.github.com/repos/${{ github.repository }}/releases/tags/presets" \
-            | jq -r '.id')
-
-          if [ "$RELEASE_ID" != "null" ]; then
-            echo "🗑️ Deleting existing presets release (ID: $RELEASE_ID)"
-            curl -X DELETE -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-              "https://api.github.com/repos/${{ github.repository }}/releases/$RELEASE_ID"
+          echo "🔍 Checking for existing 'presets' release..."
+          
+          if gh release view presets >/dev/null 2>&1; then
+            echo "🗑️ Deleting existing 'presets' release..."
+            gh release delete presets --yes
+            echo "✅ Release deleted"
           else
-            echo "ℹ️ No existing presets release found"
+            echo "ℹ️ No existing 'presets' release found"
           fi
+          
+          echo "🏷️ Removing 'presets' tag..."
+          git push --delete origin presets 2>/dev/null || echo "ℹ️ Tag 'presets' doesn't exist remotely"
 
-          # Eliminar el tag si existe
-          git push --delete origin presets 2>/dev/null || echo "ℹ️ Tag 'presets' doesn't exist"
-
-      - name: Create/Update 'presets' release
+      - name: Create 'presets' release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: presets
-          name: "Presets Update - v${{ steps.version.outputs.version }}"
+          name: "🎮 Presets v${{ steps.version.outputs.version }} (${{ steps.validate.outputs.game_count }} games)"
           body_path: release_notes.md
           files: presets.json
           draft: false
           prerelease: false
+          make_latest: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Summary
+      - name: Generate summary
         run: |
-          echo "## ✅ Presets Release Updated" >> $GITHUB_STEP_SUMMARY
+          cat >> $GITHUB_STEP_SUMMARY << EOF
+          ## ✅ Presets Release Updated Successfully
+          
+          ### 📦 Release Information
+          - **Version**: v${{ steps.version.outputs.version }}
+          - **Tag**: \`presets\`
+          - **Total Games**: ${{ steps.validate.outputs.game_count }} presets
+          - **Hash**: \`${{ steps.validate.outputs.hash }}\`
+          
+          ### 📝 Changes
+          - ➕ **Added**: ${{ steps.changes.outputs.added_count }} games
+          - ➖ **Removed**: ${{ steps.changes.outputs.removed_count }} games
+          
+          ### 🔗 Links
+          - [View Release](https://github.com/${{ github.repository }}/releases/tag/presets)
+          - [Download presets.json](https://github.com/${{ github.repository }}/releases/download/presets/presets.json)
+          
+          ---
+          
+          🎮 **DSQProcess users will receive this update automatically within 6 hours!**
+          
+          Users can also manually check for updates by clicking **"Check presets"** in the app.
+          EOF
+          
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "- **Version**: v${{ steps.version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **Tag**: \`presets\`" >> $GITHUB_STEP_SUMMARY
-          echo "- **Games**: $(jq 'length' presets.json) presets" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "🎮 DSQProcess users will receive this update automatically!" >> $GITHUB_STEP_SUMMARY
+          echo "✨ Workflow completed successfully!"
