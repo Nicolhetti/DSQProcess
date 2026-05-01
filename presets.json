@@ -70,6 +70,11 @@
     "path": "EA SPORTS FC 26"
   },
   {
+    "name": "Fallout 76",
+    "executable": "Fallout76.exe",
+    "path": "Fallout 76/Fallout76"
+  },
+  {
     "name": "Fortnite",
     "executable": "FortniteClient-Win64-Shipping.exe",
     "path": "Fortnite/Win64"
