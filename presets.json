@@ -15,6 +15,11 @@
     "path": "ARC Raiders/PioneerGame/Binaries/Win64"
   },
   {
+    "name": "Arknights: Endfield",
+    "executable": "Endfield.exe",
+    "path": "Arknights Endfield/Win64"
+  },
+  {
     "name": "Arena Breakout: Infinite",
     "executable": "UAGame.exe",
     "path": "Arena Breakout Infinite/Win64"
@@ -75,6 +80,11 @@
     "path": "Genshin Impact"
   },
   {
+    "name": "Goddess of Victory: Nikke",
+    "executable": "Nikke.exe",
+    "path": "Goddess of Victory Nikke/Win64"
+  },
+  {
     "name": "Honkai: Star Rail",
     "executable": "StarRail.exe",
     "path": "Honkai Star Rail/games/Star Rail Games"
@@ -98,6 +108,11 @@
     "name": "Marvel Rivals",
     "executable": "Marvel-Win64-Shipping.exe",
     "path": "Marvel Rivals/Win64"
+  },
+  {
+    "name": "NTE: Neverness to Everness",
+    "executable": "htgame.exe",
+    "path": "Neverness to Everness/Win64"
   },
   {
     "name": "Once Human",
@@ -225,14 +240,19 @@
     "path": "The Midnight Walkers Demo/ProjectMW/Binaries/Win64"
   },
   {
-    "name": "Towerborne",
-    "executable": "BelfryClient-Win64-Shipping.exe",
-    "path": "Towerborne/Win64"
-  },
-  {
     "name": "THRONE AND LIBERTY",
     "executable": "TL.exe",
     "path": "THRONE AND LIBERTY/Win64"
+  },
+  {
+    "name": "Torchlight: Infinite",
+    "executable": "torchlight_infinite.exe",
+    "path": "Torchlight Infinite/Win64"
+  },
+  {
+    "name": "Towerborne",
+    "executable": "BelfryClient-Win64-Shipping.exe",
+    "path": "Towerborne/Win64"
   },
   {
     "name": "Valorant",
