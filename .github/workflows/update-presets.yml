@@ -21,7 +21,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 
+          fetch-depth: 0
 
       - name: Validate presets.json
         id: validate
@@ -68,20 +68,20 @@ jobs:
           
           git show HEAD~1:presets.json > presets_old.json 2>/dev/null || echo "[]" > presets_old.json
           
-          ADDED=$(jq -r '.[].name' presets.json | sort > new_games.txt; \
-                  jq -r '.[].name' presets_old.json | sort > old_games.txt; \
-                  comm -13 old_games.txt new_games.txt | head -10)
+          jq -r '.[].name' presets.json | sort > new_games.txt
+          jq -r '.[].name' presets_old.json | sort > old_games.txt
           
-          REMOVED=$(comm -23 old_games.txt new_games.txt | head -10)
+          comm -13 old_games.txt new_games.txt | head -10 > added_games.txt
+          comm -23 old_games.txt new_games.txt | head -10 > removed_games.txt
           
-          ADDED_COUNT=$(echo "$ADDED" | grep -c . || echo "0")
-          REMOVED_COUNT=$(echo "$REMOVED" | grep -c . || echo "0")
+          ADDED_COUNT=$(wc -l < added_games.txt | tr -d ' ')
+          REMOVED_COUNT=$(wc -l < removed_games.txt | tr -d ' ')
+          
+          [ -z "$ADDED_COUNT" ] && ADDED_COUNT=0
+          [ -z "$REMOVED_COUNT" ] && REMOVED_COUNT=0
           
           echo "added_count=$ADDED_COUNT" >> $GITHUB_OUTPUT
           echo "removed_count=$REMOVED_COUNT" >> $GITHUB_OUTPUT
-          
-          echo "$ADDED" > added_games.txt
-          echo "$REMOVED" > removed_games.txt
           
           echo "➕ Added: $ADDED_COUNT games"
           echo "➖ Removed: $REMOVED_COUNT games"
