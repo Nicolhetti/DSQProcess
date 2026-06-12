@@ -70,6 +70,11 @@
     "path": "EA SPORTS FC 26"
   },
   {
+    "name": "Escape the Backrooms",
+    "executable": "Backrooms-Win64-Shipping.exe",
+    "path": "Escape the Backrooms/Win64"
+  },
+  {
     "name": "Fallout 76",
     "executable": "Fallout76.exe",
     "path": "Fallout 76/Fallout76"
@@ -180,6 +185,11 @@
     "path": "Risk of Rain 2"
   },
   {
+    "name": "Roblox",
+    "executable": "Roblox.exe",
+    "path": "Roblox"
+  },
+  {
     "name": "Rust",
     "executable": "RustClient.exe",
     "path": "Rust"
@@ -278,5 +288,15 @@
     "name": "Where Winds Meet",
     "executable": "wwm.exe",
     "path": "Where Winds Meet/Win64r"
+  },
+  {
+    "name": "Wuthering Waves",
+    "executable": "Wuthering Waves.exe",
+    "path": "Wuthering Waves"
+  },
+  {
+    "name": "Yu-Gi-Oh! Master Duel",
+    "executable": "masterduel.exe",
+    "path": "Yu-Gi-Oh! Master Duel/yu-gi-oh!  master duel"
   }
 ]
