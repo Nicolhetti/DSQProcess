@@ -75,6 +75,11 @@
     "path": "Escape the Backrooms/Win64"
   },
   {
+    "name": "EVE Online",
+    "executable": "exefile.exe",
+    "path": "EVE Online/Win64"
+  },
+  {
     "name": "Fallout 76",
     "executable": "Fallout76.exe",
     "path": "Fallout 76/Fallout76"
@@ -190,6 +195,11 @@
     "path": "Roblox"
   },
   {
+    "name": "Runescape",
+    "executable": "Runescape.exe",
+    "path": "Runescape/Win64"
+  },
+  {
     "name": "Rust",
     "executable": "RustClient.exe",
     "path": "Rust"
@@ -268,6 +278,11 @@
     "name": "Towerborne",
     "executable": "BelfryClient-Win64-Shipping.exe",
     "path": "Towerborne/Win64"
+  },
+  {
+    "name": "Umamusume: Pretty Derby",
+    "executable": "umamusumeprettyderby.exe",
+    "path": "Umamusume Pretty Derby/umamusumeprettyderby"
   },
   {
     "name": "Valorant",
