@@ -5,6 +5,11 @@
     "path": "2XKO/Live/Lion/Binaries/Win64"
   },
   {
+    "name": "Aniimo",
+    "executable": "Aniimo.exe",
+    "path": "Aniimo"
+  },
+  {
     "name": "Apex Legends",
     "executable": "r5apex.exe",
     "path": "Apex Legends"
@@ -63,6 +68,11 @@
     "name": "Destiny 2",
     "executable": "destiny2.exe",
     "path": "Destiny 2"
+  },
+  {
+    "name": "Dragonheir: Silent Gods",
+    "executable": "Dragonheir.exe",
+    "path": "Dragonheir Silent Gods"
   },
   {
     "name": "EA SPORTS FC™ 26",
@@ -125,9 +135,34 @@
     "path": "Marvel Rivals/Win64"
   },
   {
+    "name": "MARVEL vs. CAPCOM Fighting Collection: Arcade Classics",
+    "executable": "marvelvscapcomfightingcollection.exe",
+    "path": "MARVEL vs. CAPCOM Fighting Collection Arcade Classics/marvel vs. capcom fighting collection"
+  },
+  {
+    "name": "MONSTER HUNTER RISE",
+    "executable": "monsterhunterrise.exe",
+    "path": "MONSTER HUNTER RISE/monsterhunterrise"
+  },
+  {
+    "name": "Monster Hunter Stories 3: Twisted Reflection",
+    "executable": "monster_hunter_stories_3_twisted_reflection_trial.exe",
+    "path": "Monster Hunter Stories 3 Twisted Reflection/monster_hunter_stories_3_twisted_reflection_trial"
+  },
+  {
+    "name": "Monster Hunter Wilds",
+    "executable": "monsterhunterwilds.exe",
+    "path": "Monster Hunter Wilds/monsterhunterwilds"
+  },
+  {
     "name": "NTE: Neverness to Everness",
     "executable": "htgame.exe",
     "path": "Neverness to Everness/Win64"
+  },
+  {
+    "name": "Old School RuneScape",
+    "executable": "osclient.exe",
+    "path": "Old School RuneScape/bin/win64"
   },
   {
     "name": "Once Human",
@@ -175,6 +210,11 @@
     "path": "PVZ Replanted"
   },
   {
+    "name": "PRAGMATA",
+    "executable": "pragmata_sketchbook.exe",
+    "path": "PRAGMATA"
+  },
+  {
     "name": "R.E.P.O.",
     "executable": "REPO.exe",
     "path": "REPO"
@@ -183,6 +223,21 @@
     "name": "Rainbow Six Siege",
     "executable": "RainbowSix.exe",
     "path": "Tom Clancy's Rainbow Six Siege"
+  },
+  {
+    "name": "Resident Evil 2",
+    "executable": "re2.exe",
+    "path": "Resident Evil 2/resident evil 2  biohazard re2"
+  },
+  {
+    "name": "Resident Evil 4",
+    "executable": "re4.exe",
+    "path": "Resident Evil 4/resident evil 4  biohazard re4"
+  },
+  {
+    "name": "Resident Evil Village",
+    "executable": "re8.exe",
+    "path": "Resident Evil Village/resident evil village biohazard village"
   },
   {
     "name": "Risk of Rain 2: Alloyed Collective",
@@ -198,6 +253,11 @@
     "name": "Runescape",
     "executable": "Runescape.exe",
     "path": "Runescape/Win64"
+  },
+  {
+    "name": "RuneScape: Dragonwilds",
+    "executable": "RSDragonwilds-Win64-Shipping.exe",
+    "path": "RuneScape Dragonwilds/RSDragonwilds/Binaries/Win64"
   },
   {
     "name": "Rust",
@@ -238,6 +298,11 @@
     "name": "Storm Lancers Demo",
     "executable": "StormLancersDemo.exe",
     "path": "Storm Lancers Demo"
+  },
+  {
+    "name": "Street Fighter™ 6",
+    "executable": "StreetFighter6.exe",
+    "path": "Street Fighter 6"
   },
   {
     "name": "SUPERVIVE",
