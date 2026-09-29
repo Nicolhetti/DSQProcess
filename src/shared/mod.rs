@@ -1,4 +1,4 @@
 pub mod config;
 pub mod lang;
-pub mod types;
 pub mod richpresence;
+pub mod types;
