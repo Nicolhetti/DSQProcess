@@ -1,10 +1,21 @@
 use std::path::{Path, PathBuf};
-use std::sync::{Arc, Mutex};
 use sysinfo::{Pid, ProcessesToUpdate, System};
 
+/// Normaliza la ruta de un preset bajo "Games/"
+pub fn games_path(folder: &str) -> String {
+    if folder.starts_with("Games/") || folder.starts_with("Games\\") {
+        folder.to_string()
+    } else {
+        format!(
+            "Games/{}",
+            folder.trim_start_matches('/').trim_start_matches('\\')
+        )
+    }
+}
+
 pub struct ProcessMonitor {
-    processes: Arc<Mutex<Vec<ProcessInfo>>>,
-    system: Arc<Mutex<System>>, // Reutilizar System para mejor performance
+    processes: Vec<ProcessInfo>,
+    system: System,
 }
 
 #[derive(Clone, Debug)]
@@ -17,110 +28,76 @@ pub struct ProcessInfo {
 impl ProcessMonitor {
     pub fn new() -> Self {
         Self {
-            processes: Arc::new(Mutex::new(Vec::new())),
-            system: Arc::new(Mutex::new(System::new_all())),
+            processes: Vec::new(),
+            system: System::new_all(),
         }
     }
 
-    pub fn add_process(&self, pid: u32, exe_name: String, exe_path: PathBuf) {
-        if let Ok(mut procs) = self.processes.lock() {
-            procs.push(ProcessInfo {
-                pid,
-                exe_name: exe_name.clone(),
-                exe_path,
-            });
-            log::info!("Added process to monitor: {} (PID: {})", exe_name, pid);
-        } else {
-            log::error!("Failed to acquire lock for adding process");
-        }
+    pub fn add_process(&mut self, pid: u32, exe_name: String, exe_path: PathBuf) {
+        self.processes.push(ProcessInfo {
+            pid,
+            exe_name: exe_name.clone(),
+            exe_path,
+        });
+        log::info!("Added process to monitor: {} (PID: {})", exe_name, pid);
     }
 
-    #[allow(dead_code)]
-    pub fn get_active_processes(&self) -> Vec<ProcessInfo> {
-        self.processes
-            .lock()
-            .ok()
-            .map(|p| p.clone())
-            .unwrap_or_default()
-    }
-
-    pub fn check_and_remove_dead_processes(&self) -> Vec<String> {
-        // Refresh system info primero
-        if let Ok(mut sys) = self.system.lock() {
-            sys.refresh_processes(ProcessesToUpdate::All, true);
-        } else {
-            log::error!("Failed to acquire system lock for refresh");
-            return Vec::new();
-        }
+    pub fn check_and_remove_dead_processes(&mut self) -> Vec<String> {
+        self.system.refresh_processes(ProcessesToUpdate::All, true);
 
         let mut removed = Vec::new();
 
-        if let Ok(mut procs) = self.processes.lock() {
-            let sys = match self.system.lock() {
-                Ok(s) => s,
-                Err(_) => {
-                    log::error!("Failed to acquire system lock");
-                    return removed;
-                }
-            };
+        self.processes.retain(|proc_info| {
+            let pid = Pid::from_u32(proc_info.pid);
+            let is_alive = self.system.process(pid).is_some();
 
-            procs.retain(|proc_info| {
-                let pid = Pid::from_u32(proc_info.pid);
-                let is_alive = sys.process(pid).is_some();
+            if !is_alive {
+                log::info!(
+                    "Process {} (PID: {}) has terminated",
+                    proc_info.exe_name,
+                    proc_info.pid
+                );
+                removed.push(proc_info.exe_name.clone());
 
-                if !is_alive {
-                    log::info!(
-                        "Process {} (PID: {}) has terminated",
-                        proc_info.exe_name,
-                        proc_info.pid
-                    );
-                    removed.push(proc_info.exe_name.clone());
+                // Intentar eliminar el ejecutable de forma segura
+                if proc_info.exe_path.exists() {
+                    // Esperar un poco para asegurar que el proceso se liberó
+                    std::thread::sleep(std::time::Duration::from_millis(100));
 
-                    // Intentar eliminar el ejecutable de forma segura
-                    if proc_info.exe_path.exists() {
-                        // Esperar un poco para asegurar que el proceso se liberó
-                        std::thread::sleep(std::time::Duration::from_millis(100));
-
-                        match std::fs::remove_file(&proc_info.exe_path) {
-                            Ok(_) => {
-                                log::info!(
-                                    "Successfully deleted executable: {}",
-                                    proc_info.exe_path.display()
-                                );
-                            }
-                            Err(e) => {
-                                log::warn!(
-                                    "Failed to delete executable {} (will retry later): {}",
-                                    proc_info.exe_path.display(),
-                                    e
-                                );
-                                // No fallar silenciosamente, pero tampoco bloquear
-                            }
+                    match std::fs::remove_file(&proc_info.exe_path) {
+                        Ok(_) => {
+                            log::info!(
+                                "Successfully deleted executable: {}",
+                                proc_info.exe_path.display()
+                            );
+                        }
+                        Err(e) => {
+                            log::warn!(
+                                "Failed to delete executable {} (will retry later): {}",
+                                proc_info.exe_path.display(),
+                                e
+                            );
                         }
                     }
                 }
+            }
 
-                is_alive
-            });
-        } else {
-            log::error!("Failed to acquire processes lock");
-        }
+            is_alive
+        });
 
         removed
     }
 
     /// Limpia todos los procesos y ejecutables pendientes (útil para shutdown)
-    pub fn cleanup_all(&self) {
-        if let Ok(mut procs) = self.processes.lock() {
-            for proc_info in procs.drain(..) {
-                if proc_info.exe_path.exists() {
-                    if let Err(e) = std::fs::remove_file(&proc_info.exe_path) {
-                        log::warn!(
-                            "Failed to cleanup executable on shutdown {}: {}",
-                            proc_info.exe_path.display(),
-                            e
-                        );
-                    }
+    pub fn cleanup_all(&mut self) {
+        for proc_info in self.processes.drain(..) {
+            if proc_info.exe_path.exists() {
+                if let Err(e) = std::fs::remove_file(&proc_info.exe_path) {
+                    log::warn!(
+                        "Failed to cleanup executable on shutdown {}: {}",
+                        proc_info.exe_path.display(),
+                        e
+                    );
                 }
             }
         }
@@ -154,15 +131,7 @@ pub fn create_fake_process(
     }
 
     // Agregar automáticamente "Games/" si la ruta no empieza con ella
-    let full_path = if folder.starts_with("Games/") || folder.starts_with("Games\\") {
-        folder.to_string()
-    } else {
-        format!(
-            "Games/{}",
-            folder.trim_start_matches('/').trim_start_matches('\\')
-        )
-    };
-
+    let full_path = games_path(folder);
     let target_folder = Path::new(&full_path);
 
     // Crear directorio con manejo de errores apropiado
