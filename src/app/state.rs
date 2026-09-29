@@ -12,7 +12,6 @@ pub struct DsqApp {
     pub custom_path: String,
     pub status: String,
     pub presets: Vec<Preset>,
-    pub filtered_presets: Vec<Preset>,
     pub selected_preset: usize,
     pub langs: HashMap<String, LangMap>,
     pub selected_lang: String,
@@ -50,25 +49,20 @@ pub enum Tab {
     About,
 }
 
+fn throttle(last: &mut Option<Instant>, interval: Duration) -> bool {
+    match last {
+        Some(t) if t.elapsed() < interval => false,
+        _ => {
+            *last = Some(Instant::now());
+            true
+        }
+    }
+}
+
 impl DsqApp {
     /// Verifica si debe actualizar el cache de Discord
     pub fn should_check_discord(&mut self) -> bool {
-        const CHECK_INTERVAL: Duration = Duration::from_secs(5);
-
-        match self.last_discord_check {
-            None => {
-                self.last_discord_check = Some(Instant::now());
-                true
-            }
-            Some(last_check) => {
-                if last_check.elapsed() >= CHECK_INTERVAL {
-                    self.last_discord_check = Some(Instant::now());
-                    true
-                } else {
-                    false
-                }
-            }
-        }
+        throttle(&mut self.last_discord_check, Duration::from_secs(5))
     }
 
     /// Invalida el cache de Discord para forzar verificación inmediata
@@ -81,22 +75,7 @@ impl DsqApp {
 
     /// Verifica si debe revisar procesos muertos
     pub fn should_check_processes(&mut self) -> bool {
-        const CHECK_INTERVAL: Duration = Duration::from_secs(2);
-
-        match self.last_process_check {
-            None => {
-                self.last_process_check = Some(Instant::now());
-                true
-            }
-            Some(last_check) => {
-                if last_check.elapsed() >= CHECK_INTERVAL {
-                    self.last_process_check = Some(Instant::now());
-                    true
-                } else {
-                    false
-                }
-            }
-        }
+        throttle(&mut self.last_process_check, Duration::from_secs(2))
     }
 
     /// Verifica y limpia procesos muertos
