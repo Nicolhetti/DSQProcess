@@ -15,7 +15,6 @@ const CACHE_TTL_SECONDS: u64 = 21600; // 6 horas
 struct PresetsMetadata {
     version: String,
     last_check: u64,
-    hash: String,
 }
 
 /// Carga todos los presets (oficiales + personalizados)
@@ -62,28 +61,11 @@ pub fn load_presets() -> Vec<Preset> {
     all_presets
 }
 
-/// Escritura atómica de archivos para evitar corrupción
-fn write_atomic(path: &str, contents: &[u8]) -> std::io::Result<()> {
-    use std::{fs, io::Write, path::Path};
-
-    let tmp = format!("{}.tmp", path);
-
-    // Escribir a archivo temporal
-    {
-        let mut f = fs::File::create(&tmp)?;
-        f.write_all(contents)?;
-        f.sync_all()?; // Forzar flush a disco
-    }
-
-    // Renombrar atómicamente
-    if let Err(e) = fs::rename(&tmp, path) {
-        // En Windows, puede ser necesario eliminar el archivo existente primero
-        if Path::new(path).exists() {
-            fs::remove_file(path)?;
-        }
-        fs::rename(&tmp, path).map_err(|_| e)?;
-    }
-
+/// Guarda los presets personalizados
+fn save_custom_presets(presets: &[Preset]) -> Result<(), Box<dyn std::error::Error>> {
+    let json = serde_json::to_string_pretty(presets)?;
+    fs::write(CUSTOM_PRESETS_FILE, json.as_bytes())?;
+    log::info!("Saved {} custom presets", presets.len());
     Ok(())
 }
 
@@ -92,14 +74,6 @@ fn load_custom_presets() -> Result<Vec<Preset>, Box<dyn std::error::Error>> {
     let data = fs::read_to_string(CUSTOM_PRESETS_FILE)?;
     let presets = serde_json::from_str(&data)?;
     Ok(presets)
-}
-
-/// Guarda los presets personalizados
-fn save_custom_presets(presets: &[Preset]) -> Result<(), Box<dyn std::error::Error>> {
-    let json = serde_json::to_string_pretty(presets)?;
-    write_atomic(CUSTOM_PRESETS_FILE, json.as_bytes())?;
-    log::info!("Saved {} custom presets", presets.len());
-    Ok(())
 }
 
 /// Agrega un nuevo preset personalizado
@@ -176,16 +150,8 @@ fn load_metadata() -> PresetsMetadata {
 /// Guarda los metadatos de presets
 fn save_metadata(metadata: &PresetsMetadata) -> Result<(), Box<dyn std::error::Error>> {
     let json = serde_json::to_string_pretty(metadata)?;
-    write_atomic(PRESETS_METADATA_FILE, json.as_bytes())?;
+    fs::write(PRESETS_METADATA_FILE, json.as_bytes())?;
     Ok(())
-}
-
-/// Calcula el hash SHA-256 del contenido
-fn calculate_hash(content: &str) -> String {
-    use sha2::{Digest, Sha256};
-    let mut hasher = Sha256::new();
-    hasher.update(content.as_bytes());
-    hex::encode(hasher.finalize())
 }
 
 /// Obtiene el timestamp actual en segundos
@@ -242,13 +208,15 @@ fn extract_remote_version(rel: &GitHubRelease) -> String {
     rel.tag_name.clone()
 }
 
-/// Extrae versión semántica de un string
+/// Extrae versión semver de un string (p. ej. "Presets v1.2.3")
 fn extract_version_from_string(s: &str) -> Option<String> {
-    // Buscar patrón X.Y.Z (con o sin 'v' adelante)
-    let re = regex::Regex::new(r"v?(\d+\.\d+\.\d+)").ok()?;
-    re.captures(s)
-        .and_then(|cap| cap.get(1))
-        .map(|m| m.as_str().to_string())
+    s.split_whitespace().find_map(|word| {
+        let v = word.strip_prefix('v').unwrap_or(word);
+        (!v.is_empty()
+            && v.split('.').count() == 3
+            && v.chars().all(|c| c.is_ascii_digit() || c == '.'))
+        .then(|| v.to_string())
+    })
 }
 
 /// Verifica si los presets están desactualizados (con cache inteligente)
@@ -278,7 +246,6 @@ pub fn is_presets_outdated() -> bool {
                 let new_metadata = PresetsMetadata {
                     version: metadata.version,
                     last_check: current_timestamp(),
-                    hash: metadata.hash,
                 };
                 let _ = save_metadata(&new_metadata);
             }
@@ -374,13 +341,12 @@ pub fn update_presets_file() -> Result<(), Box<dyn std::error::Error>> {
     log::info!("Downloaded {} presets", validated_presets.len());
 
     // Guardar el archivo
-    write_atomic(PRESETS_FILE, presets_content.as_bytes())?;
+    fs::write(PRESETS_FILE, presets_content.as_bytes())?;
 
     // Actualizar metadata
     let metadata = PresetsMetadata {
         version: extract_remote_version(&release),
         last_check: current_timestamp(),
-        hash: calculate_hash(&presets_content),
     };
     save_metadata(&metadata)?;
 
@@ -389,31 +355,4 @@ pub fn update_presets_file() -> Result<(), Box<dyn std::error::Error>> {
         metadata.version
     );
     Ok(())
-}
-
-/// Fuerza una verificación remota ignorando el cache
-#[allow(dead_code)]
-pub fn force_check_updates() -> bool {
-    log::info!("Force checking for updates");
-
-    match check_remote_version() {
-        Ok(remote_version) => {
-            let metadata = load_metadata();
-            let is_outdated = remote_version != metadata.version;
-
-            // Actualizar timestamp independientemente del resultado
-            let new_metadata = PresetsMetadata {
-                version: metadata.version,
-                last_check: current_timestamp(),
-                hash: metadata.hash,
-            };
-            let _ = save_metadata(&new_metadata);
-
-            is_outdated
-        }
-        Err(e) => {
-            log::error!("Force check failed: {}", e);
-            false
-        }
-    }
 }
