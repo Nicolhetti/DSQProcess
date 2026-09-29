@@ -2,7 +2,7 @@ use super::components;
 use crate::app::state::DsqApp;
 use crate::app::translate::translate;
 use crate::core::presets::{is_presets_outdated, load_presets, update_presets_file};
-use crate::core::process::create_fake_process;
+use crate::core::process::{create_fake_process, games_path};
 use crate::platform::discord::{
     get_installed_discord_versions, is_discord_running, open_discord, DiscordVersion,
 };
@@ -32,18 +32,11 @@ fn render_rich_presence_status(ui: &mut egui::Ui, app: &mut DsqApp) {
         return;
     }
 
-    let (status_text, color) = if let Some(ref rp) = app.rich_presence {
-        if rp.is_connected() {
-            (
-                translate(app, "rich_presence_connected"),
-                egui::Color32::GREEN,
-            )
-        } else {
-            (
-                translate(app, "rich_presence_disconnected"),
-                egui::Color32::RED,
-            )
-        }
+    let (status_text, color) = if app.rich_presence.is_some() {
+        (
+            translate(app, "rich_presence_connected"),
+            egui::Color32::GREEN,
+        )
     } else {
         (
             translate(app, "rich_presence_disconnected"),
@@ -220,7 +213,6 @@ fn render_outdated_presets_warning(ui: &mut egui::Ui, app: &mut DsqApp) {
                     Ok(_) => {
                         app.status = translate(app, "presets_updated");
                         app.presets = load_presets();
-                        app.filtered_presets = app.presets.clone();
                         app.presets_outdated = false;
 
                         // Validar selected_preset después de actualizar
@@ -262,22 +254,10 @@ fn render_process_configuration(ui: &mut egui::Ui, app: &mut DsqApp) {
 
             // Mostrar preview de la ruta completa
             if !app.custom_path.is_empty() {
-                let full_path = if app.custom_path.starts_with("Games/")
-                    || app.custom_path.starts_with("Games\\")
-                {
-                    app.custom_path.clone()
-                } else {
-                    format!(
-                        "Games/{}",
-                        app.custom_path
-                            .trim_start_matches('/')
-                            .trim_start_matches('\\')
-                    )
-                };
                 ui.add_space(3.0);
                 ui.colored_label(
                     egui::Color32::from_rgb(108, 117, 125),
-                    format!("📁 {}", full_path),
+                    format!("📁 {}", games_path(&app.custom_path)),
                 );
             }
 
@@ -302,17 +282,7 @@ fn handle_start_process(app: &mut DsqApp) {
     }
 
     // Calcular ruta completa para el mensaje
-    let full_path =
-        if app.custom_path.starts_with("Games/") || app.custom_path.starts_with("Games\\") {
-            app.custom_path.clone()
-        } else {
-            format!(
-                "Games/{}",
-                app.custom_path
-                    .trim_start_matches('/')
-                    .trim_start_matches('\\')
-            )
-        };
+    let full_path = games_path(&app.custom_path);
 
     log::info!("Starting fake process: {} at {}", process_name, full_path);
 
