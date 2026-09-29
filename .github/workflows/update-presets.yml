@@ -94,13 +94,14 @@ jobs:
           HASH="${{ steps.validate.outputs.hash }}"
           ADDED_COUNT="${{ steps.changes.outputs.added_count }}"
           REMOVED_COUNT="${{ steps.changes.outputs.removed_count }}"
+          UPDATE_DATE=$(date -u '+%Y-%m-%d %H:%M:%S UTC')
           
           cat > release_notes.md << 'EOF'
           ## 🎮 Presets Update v$VERSION
 
           ### 📊 Estadísticas
           - **Total de juegos**: $GAME_COUNT presets oficiales
-          - **Última actualización**: $(date '+%Y-%m-%d %H:%M:%S UTC')
+          - **Última actualización**: $UPDATE_DATE
           - **Hash**: `$HASH`
 
           ### 📝 Cambios en esta actualización
@@ -109,6 +110,7 @@ jobs:
           sed -i "s/\$VERSION/$VERSION/g" release_notes.md
           sed -i "s/\$GAME_COUNT/$GAME_COUNT/g" release_notes.md
           sed -i "s/\$HASH/$HASH/g" release_notes.md
+          sed -i "s/\$UPDATE_DATE/$UPDATE_DATE/g" release_notes.md
           
           if [ "$ADDED_COUNT" -gt 0 ]; then
             echo "" >> release_notes.md
