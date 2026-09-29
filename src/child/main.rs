@@ -38,9 +38,8 @@ struct DsqChildApp {
     is_scheduled_to_close: bool,
 }
 
-impl Default for DsqChildApp {
-    fn default() -> Self {
-        let lang = load_language_from_config();
+impl DsqChildApp {
+    fn new(lang: LangMap) -> Self {
         let exe_path = env::current_exe().unwrap_or_default();
         let process_name = exe_path
             .file_stem()
@@ -57,9 +56,7 @@ impl Default for DsqChildApp {
             is_scheduled_to_close: false,
         }
     }
-}
 
-impl DsqChildApp {
     fn t(&self, key: &str) -> String {
         self.lang
             .get(key)
@@ -267,6 +264,6 @@ fn main() -> Result<(), eframe::Error> {
     eframe::run_native(
         &title,
         options,
-        Box::new(|_cc| Box::new(DsqChildApp::default())),
+        Box::new(move |_cc| Box::new(DsqChildApp::new(lang))),
     )
 }
