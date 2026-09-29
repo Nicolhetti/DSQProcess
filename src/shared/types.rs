@@ -1,9 +1,9 @@
-use serde::{ Deserialize, Serialize };
+use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
 pub type LangMap = HashMap<String, String>;
 
-#[derive(Serialize, Deserialize, Default)]
+#[derive(Serialize, Deserialize)]
 pub struct Config {
     pub language: String,
     pub selected_preset: usize,

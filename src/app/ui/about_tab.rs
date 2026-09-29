@@ -1,8 +1,8 @@
-use eframe::egui;
+use super::components;
 use crate::app::state::DsqApp;
 use crate::app::translate::translate;
-use crate::platform::update::{ check_for_updates, VERSION };
-use super::components;
+use crate::platform::update::{check_for_updates, VERSION};
+use eframe::egui;
 
 pub fn render(ui: &mut egui::Ui, app: &mut DsqApp) {
     ui.vertical_centered(|ui| {
@@ -23,7 +23,10 @@ fn render_version_info(ui: &mut egui::Ui, app: &mut DsqApp) {
             ui.heading(format!("DSQProcess v{}", VERSION));
             ui.add_space(10.0);
 
-            if ui.button("🔍 ".to_string() + &translate(app, "check_update")).clicked() {
+            if ui
+                .button("🔍 ".to_string() + &translate(app, "check_update"))
+                .clicked()
+            {
                 handle_update_check(app);
             }
         });
@@ -34,7 +37,10 @@ fn handle_update_check(app: &mut DsqApp) {
     match check_for_updates(VERSION) {
         Ok(Some(download_url)) => {
             app.status = translate(app, "update_available").replace("{url}", &download_url);
-            let _ = open::that(download_url);
+            // Windows-only binary: cmd start abre la URL en el navegador por defecto
+            let _ = std::process::Command::new("cmd")
+                .args(["/C", "start", "", &download_url])
+                .spawn();
         }
         Ok(None) => {
             app.status = translate(app, "up_to_date");

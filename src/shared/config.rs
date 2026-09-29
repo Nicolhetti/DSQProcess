@@ -2,7 +2,10 @@ use crate::shared::types::Config;
 use std::fs;
 
 pub fn save_config(config: &Config) {
-    let _ = fs::write("config.json", serde_json::to_string_pretty(config).unwrap_or_default());
+    let _ = fs::write(
+        "config.json",
+        serde_json::to_string_pretty(config).unwrap_or_default(),
+    );
 }
 
 pub fn load_config() -> Config {

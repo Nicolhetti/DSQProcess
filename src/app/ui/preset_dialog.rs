@@ -1,16 +1,15 @@
-use eframe::egui;
 use crate::app::state::DsqApp;
 use crate::app::translate::translate;
+use crate::core::presets::{add_preset, delete_custom_preset, edit_custom_preset, load_presets};
 use crate::shared::types::Preset;
-use crate::core::presets::{ add_preset, edit_custom_preset, delete_custom_preset, load_presets };
+use eframe::egui;
 
 pub fn render_add_dialog(ctx: &egui::Context, app: &mut DsqApp) {
     if !app.show_add_preset_dialog {
         return;
     }
 
-    egui::Window
-        ::new(translate(app, "add_preset_title"))
+    egui::Window::new(translate(app, "add_preset_title"))
         .collapsible(false)
         .resizable(false)
         .anchor(egui::Align2::CENTER_CENTER, [0.0, 0.0])
@@ -24,8 +23,7 @@ pub fn render_edit_dialog(ctx: &egui::Context, app: &mut DsqApp) {
         return;
     }
 
-    egui::Window
-        ::new(translate(app, "edit_preset_title"))
+    egui::Window::new(translate(app, "edit_preset_title"))
         .collapsible(false)
         .resizable(false)
         .anchor(egui::Align2::CENTER_CENTER, [0.0, 0.0])
@@ -39,8 +37,7 @@ pub fn render_delete_confirmation(ctx: &egui::Context, app: &mut DsqApp) {
         return;
     }
 
-    egui::Window
-        ::new(translate(app, "delete_preset_title"))
+    egui::Window::new(translate(app, "delete_preset_title"))
         .collapsible(false)
         .resizable(false)
         .anchor(egui::Align2::CENTER_CENTER, [0.0, 0.0])
@@ -57,11 +54,17 @@ pub fn render_delete_confirmation(ctx: &egui::Context, app: &mut DsqApp) {
                 ui.add_space(15.0);
 
                 ui.horizontal(|ui| {
-                    if ui.button("✔ ".to_string() + &translate(app, "delete")).clicked() {
+                    if ui
+                        .button("✔ ".to_string() + &translate(app, "delete"))
+                        .clicked()
+                    {
                         handle_delete_preset(app);
                     }
 
-                    if ui.button("✖ ".to_string() + &translate(app, "cancel")).clicked() {
+                    if ui
+                        .button("✖ ".to_string() + &translate(app, "cancel"))
+                        .clicked()
+                    {
                         close_delete_dialog(app);
                     }
                 });
@@ -95,7 +98,10 @@ fn render_preset_form(ui: &mut egui::Ui, app: &mut DsqApp, is_edit: bool) {
         ui.add_space(15.0);
 
         ui.horizontal(|ui| {
-            if ui.button("✔ ".to_string() + &translate(app, "save_preset")).clicked() {
+            if ui
+                .button("✔ ".to_string() + &translate(app, "save_preset"))
+                .clicked()
+            {
                 if is_edit {
                     handle_edit_preset(app);
                 } else {
@@ -103,7 +109,10 @@ fn render_preset_form(ui: &mut egui::Ui, app: &mut DsqApp, is_edit: bool) {
                 }
             }
 
-            if ui.button("✖ ".to_string() + &translate(app, "cancel")).clicked() {
+            if ui
+                .button("✖ ".to_string() + &translate(app, "cancel"))
+                .clicked()
+            {
                 if is_edit {
                     close_edit_dialog(app);
                 } else {
@@ -130,7 +139,6 @@ fn handle_save_preset(app: &mut DsqApp) {
     match add_preset(new_preset) {
         Ok(_) => {
             app.presets = load_presets();
-            app.filtered_presets = app.presets.clone();
             app.status = translate(app, "preset_added_success");
             close_add_dialog(app);
         }
@@ -157,7 +165,6 @@ fn handle_edit_preset(app: &mut DsqApp) {
         match edit_custom_preset(old_name, edited_preset) {
             Ok(_) => {
                 app.presets = load_presets();
-                app.filtered_presets = app.presets.clone();
                 app.status = translate(app, "preset_edited_success");
                 close_edit_dialog(app);
             }
@@ -173,7 +180,6 @@ fn handle_delete_preset(app: &mut DsqApp) {
         match delete_custom_preset(name) {
             Ok(_) => {
                 app.presets = load_presets();
-                app.filtered_presets = app.presets.clone();
                 app.status = translate(app, "preset_deleted_success");
                 close_delete_dialog(app);
             }

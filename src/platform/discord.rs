@@ -1,6 +1,6 @@
-use std::process::Command;
-use std::path::{ Path, PathBuf };
 use std::ffi::OsStr;
+use std::path::{Path, PathBuf};
+use std::process::Command;
 use sysinfo::System;
 
 #[allow(clippy::upper_case_acronyms)]
@@ -32,15 +32,27 @@ impl DiscordVersion {
 pub fn is_discord_running() -> bool {
     let system = System::new_all();
 
-    if system.processes_by_name(OsStr::new("Discord")).next().is_some() {
+    if system
+        .processes_by_name(OsStr::new("Discord"))
+        .next()
+        .is_some()
+    {
         return true;
     }
 
-    if system.processes_by_name(OsStr::new("DiscordCanary")).next().is_some() {
+    if system
+        .processes_by_name(OsStr::new("DiscordCanary"))
+        .next()
+        .is_some()
+    {
         return true;
     }
 
-    if system.processes_by_name(OsStr::new("DiscordPTB")).next().is_some() {
+    if system
+        .processes_by_name(OsStr::new("DiscordPTB"))
+        .next()
+        .is_some()
+    {
         return true;
     }
 
@@ -50,8 +62,14 @@ pub fn is_discord_running() -> bool {
 pub fn get_installed_discord_versions() -> Vec<DiscordVersion> {
     let mut found = vec![];
     if let Some(local_appdata) = std::env::var_os("LOCALAPPDATA") {
-        for version in &[DiscordVersion::Stable, DiscordVersion::Canary, DiscordVersion::PTB] {
-            let path = Path::new(&local_appdata).join(version.folder_name()).join("Update.exe");
+        for version in &[
+            DiscordVersion::Stable,
+            DiscordVersion::Canary,
+            DiscordVersion::PTB,
+        ] {
+            let path = Path::new(&local_appdata)
+                .join(version.folder_name())
+                .join("Update.exe");
             if path.exists() {
                 found.push(version.clone());
             }
@@ -66,7 +84,10 @@ pub fn open_discord(version: DiscordVersion) -> std::io::Result<()> {
             .join(version.folder_name())
             .join("Update.exe");
         if update_exe.exists() {
-            Command::new(update_exe).arg("--processStart").arg(version.exe_name()).spawn()?;
+            Command::new(update_exe)
+                .arg("--processStart")
+                .arg(version.exe_name())
+                .spawn()?;
         }
     }
     Ok(())
