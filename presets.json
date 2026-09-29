@@ -110,6 +110,11 @@
     "path": "Goddess of Victory Nikke/Win64"
   },
   {
+    "name": "Gravebound",
+    "executable": "Gravebound.exe",
+    "path": "Gravebound"
+  },
+  {
     "name": "Honkai: Star Rail",
     "executable": "StarRail.exe",
     "path": "Honkai Star Rail/games/Star Rail Games"
@@ -368,6 +373,11 @@
     "name": "Where Winds Meet",
     "executable": "wwm.exe",
     "path": "Where Winds Meet/Win64r"
+  },
+  {
+    "name": "Wizard101",
+    "executable": "Wizard101.exe",
+    "path": "Wizard101"
   },
   {
     "name": "Wuthering Waves",
