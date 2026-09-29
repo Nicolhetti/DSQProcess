@@ -33,7 +33,6 @@ fn main() -> Result<(), eframe::Error> {
     let mut app = DsqApp::default();
 
     app.presets = load_presets();
-    app.filtered_presets = app.presets.clone();
     app.presets_outdated = is_presets_outdated();
     app.langs.insert("Español".to_string(), load_language("es"));
     app.langs.insert("English".to_string(), load_language("en"));
